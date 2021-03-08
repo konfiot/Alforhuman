@@ -4,7 +4,7 @@ import pickle as pk
 
 
 class Dataset:
-    def __init__(self, session_id, X, y, labeled_size, labeled, unlabeled, q=None):
+    def __init__(self, session_id, X, y, labeled_size, labeled, unlabeled, human_pred=[], q=None):
         self.session_id = session_id
         self.X = X
         self.y = y
@@ -12,6 +12,7 @@ class Dataset:
         self.labeled = labeled
         self.unlabeled = unlabeled
         self.q = None
+        self.human_pred = human_pred
         print('labeled:', self.labeled)
         print('unlabeled:', self.unlabeled)
 
@@ -25,9 +26,12 @@ class Dataset:
         print('labeled:', self.labeled)
         print('unlabeled:', self.unlabeled)
 
+    def add_human_prediction(self, human_pred, q):
+        self.human_pred.append((q, human_pred))
+
     def store(self):
         dataset_dict = {'X': self.X, 'y': self.y, 'labeled_size': self.labeled_size,
-                        'labeled': self.labeled, 'unlabeled': self.unlabeled, 'q': self.q}
+                        'labeled': self.labeled, 'unlabeled': self.unlabeled, 'human_pred': self.human_pred, 'q': self.q}
         file_path = get_dataset_file_path(self.session_id)
         with open(file_path, "wb") as f:
             pk.dump(dataset_dict, f)
@@ -57,5 +61,5 @@ def get_dataset_of_session(session_id):
         dataset_dict = pk.load(f)
 
     dataset = Dataset(session_id=session_id, X=dataset_dict['X'], y=dataset_dict['y'],
-                      labeled_size=dataset_dict['labeled_size'], labeled=dataset_dict['labeled'], unlabeled=dataset_dict['unlabeled'], q=dataset_dict['q'])
+                      labeled_size=dataset_dict['labeled_size'], labeled=dataset_dict['labeled'], unlabeled=dataset_dict['unlabeled'], human_pred=dataset_dict['human_pred'], q=dataset_dict['q'])
     return dataset
