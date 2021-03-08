@@ -3,11 +3,21 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 import random
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
 
-def generate_image_samples(num_circles: int, num_squares: int, label: int):
+
+def show_image(x, label=None):
+    generate_circle_square_image_samples(x[0], x[1])
+    if label is None:
+        plt.title('What is this ?')
+    else:
+        plt.title('This is '+str(label))
+    plt.show()
+    plt.close()
+
+
+def generate_circle_square_image_samples(num_circles, num_squares):
+    num_circles = int(num_circles)
+    num_squares = int(num_squares)
     # Create figure and axes
     im = np.full((200, 200, 3), 255)
     fig, ax = plt.subplots(1)
@@ -29,9 +39,6 @@ def generate_image_samples(num_circles: int, num_squares: int, label: int):
         rect = patches.Circle((x, y), 20, linewidth=1,
                               edgecolor='b', facecolor='none')
         ax.add_patch(rect)
-    plt.title('label : '+str(label))
-    plt.show()
-    plt.close()
 
 
 def assign_binary_label(num_circles, num_squares, decision_func):
@@ -41,7 +48,7 @@ def assign_binary_label(num_circles, num_squares, decision_func):
         return 0
 
 
-def generate_dataset(dataset_size):
+def generate_circle_square_dataset(dataset_size):
     # Generate 5 random numbers between 10 and 30
     circles = [random.randint(1, 5) for _ in range(dataset_size)]
     squares = [random.randint(1, 5) for _ in range(dataset_size)]
@@ -57,32 +64,3 @@ def generate_dataset(dataset_size):
     y = np.array(y)
 
     return X, y
-
-
-def show_initial_label(X, y):
-    for i in range(X.shape[0]):
-        generate_image_samples(
-            num_circles=int(X[i, 0]), num_squares=int(X[i, 1]), label=int(y[i]))
-
-
-def first_call():
-    dataset_size = 20
-    X, Y = generate_dataset(dataset_size=dataset_size)
-    print(X)
-    initial_labeled_size = 5
-    labeled = [random.randint(0, dataset_size-1)
-               for _ in range(initial_labeled_size)]
-    show_initial_label(X[labeled], Y[labeled])
-
-
-def what_do_you_think_this_is(X):
-    generate_image_samples(X[:, 0], X[:, 1], label=None)
-    
-def AL(x, y):
-    clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
-    clf.fit(X, y)
-
-
-first_call()
-
-what_do_you_think_this_is()
