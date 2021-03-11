@@ -1,4 +1,5 @@
 import time
+import os
 
 
 def generate_questions():
@@ -7,8 +8,9 @@ def generate_questions():
 
 
 def create_backend_session(session_id):
-    # do some things not sure how
-    pass
+    if not os.path.exists('session'):
+        os.mkdir('session')
+    os.mkdir(os.path.join('session', str(session_id)))
 
 
 def generate_session_id():

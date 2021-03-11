@@ -1,7 +1,7 @@
 from generateTask import generate_circle_square_dataset
 import random
 import pickle as pk
-
+import os
 
 class Dataset:
     def __init__(self, session_id, X, y, labeled_size, labeled, unlabeled, human_pred=[], q=None):
@@ -52,7 +52,8 @@ def generate_initial_dataset(session_id):
 
 
 def get_dataset_file_path(session_id):
-    return str(session_id)+'.pkl'
+    path = os.path.join('session', str(session_id))
+    return os.path.join(path,'dataset.pkl')
 
 
 def get_dataset_of_session(session_id):
