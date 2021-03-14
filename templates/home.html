@@ -1,6 +1,6 @@
 Your session id is {{ id }} <br/>
 
-<form method="POST" action="/questions">
+<form method="POST" action="/user_form">
 {% for name, description in questions.items() %}
 
 {{ description }} <input type="text" name="{{ name }}"> <br/>
