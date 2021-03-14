@@ -3,7 +3,7 @@ import os
 
 
 def generate_questions():
-    questions_form = 'What is you name my little pumpkin?'
+    questions_form = {'name': 'What is you name my little pumpkin?'}
     return questions_form
 
 
