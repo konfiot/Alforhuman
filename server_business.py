@@ -14,10 +14,16 @@ def start_session():
 # Server Business 2
 def receive_form(session_id, user_form):
     store_form(session_id, user_form)
-    dataset = generate_initial_dataset(session_id)
-    dataset.store()
-    return dataset.X[dataset.labeled], dataset.y[dataset.labeled]
 
+
+def initialize_dataset(session_id, dataset_type, dataset_path):
+    dataset = generate_initial_dataset(session_id, dataset_type, dataset_path)
+    dataset.store()
+
+
+def get_first_images(session_id):
+    dataset = get_dataset_of_session(session_id)
+    return [dataset.images_path[i] for i in dataset.labeled], dataset.y[dataset.labeled]
 # Server Business 3
 
 
@@ -25,7 +31,7 @@ def start_active_learning(session_id):
     dataset = get_dataset_of_session(session_id)
     q = generate_next_query(session_id, dataset)
     dataset.store()
-    return dataset.X[q], dataset.y[q], q
+    return dataset.images_path[q], dataset.y[q], q
 
 # Server Business 4
 
@@ -35,7 +41,7 @@ def active_learning_iteration(session_id, human_label: int, q: int):
     dataset.add_human_prediction(human_label, q)
     q = generate_next_query(session_id, dataset)
     dataset.store()
-    return dataset.X[q], dataset.y[q], q
+    return dataset.images_path[q], dataset.y[q], q
 
 # Server Business 5
 
@@ -43,7 +49,7 @@ def active_learning_iteration(session_id, human_label: int, q: int):
 def test_time(session_id):
     dataset = get_dataset_of_session(session_id)
     test_indices = generate_test(dataset)
-    return dataset.X[test_indices], dataset.y[test_indices]
+    return [dataset.images_path[i] for i in dataset.test_indices], dataset.y[test_indices]
 
 # Server Business 6
 
