@@ -39,6 +39,7 @@ class Dataset:
             pk.dump(dataset_dict, f)
 
 
+# Build or load Dataset object for a session id
 def generate_initial_dataset(session_id, dataset_type, dataset_path):
     print(session_id)
     if dataset_type == 'color':  # Dynamically created dataset.
@@ -57,11 +58,7 @@ def generate_initial_dataset(session_id, dataset_type, dataset_path):
         return NotImplementedError
 
 
-def get_dataset_file_path(session_id):
-    path = os.path.join('session', str(session_id))
-    return os.path.join(path, 'dataset.pkl')
-
-
+# Return the dataset assigned to a particular session id
 def get_dataset_of_session(session_id):
     file_path = get_dataset_file_path(session_id)
     with open(file_path, "rb") as f:
@@ -70,3 +67,8 @@ def get_dataset_of_session(session_id):
     dataset = Dataset(session_id=session_id, X=dataset_dict['X'], y=dataset_dict['y'], images_path=dataset_dict['images_path'],
                       labeled_size=dataset_dict['labeled_size'], labeled=dataset_dict['labeled'], unlabeled=dataset_dict['unlabeled'], human_pred=dataset_dict['human_pred'], q=dataset_dict['q'])
     return dataset
+
+
+def get_dataset_file_path(session_id):
+    path = os.path.join('session', str(session_id))
+    return os.path.join(path, 'dataset.pkl')

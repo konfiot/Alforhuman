@@ -2,7 +2,7 @@ from server_business import *
 import sys
 import os
 # This is basically all frontend
-
+# Run to test locally, meant to simulate the website
 
 def show_to_the_user(images_path, y):
     for i, x in enumerate(images_path):
