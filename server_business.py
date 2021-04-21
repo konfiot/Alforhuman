@@ -21,35 +21,47 @@ def initialize_dataset(session_id, dataset_type, dataset_path):
     dataset.store()
 
 
-def get_first_images(session_id):
+def get_first_images(session_id, return_raw_features=False):
     dataset = get_dataset_of_session(session_id)
-    return [dataset.images_path[i] for i in dataset.labeled], dataset.y[dataset.labeled]
+    if return_raw_features:
+        return [dataset.X[i,:] for i in dataset.labeled], dataset.y[dataset.labeled]
+    else:
+        return [dataset.images_path[i] for i in dataset.labeled], dataset.y[dataset.labeled]
 # Server Business 3
 
 
-def start_active_learning(session_id):
+def start_active_learning(session_id, return_raw_features=False):
     dataset = get_dataset_of_session(session_id)
     q = generate_next_query(session_id, dataset)
     dataset.store()
-    return dataset.images_path[q], dataset.y[q], q
+    if return_raw_features:
+        return dataset.X[q,:], dataset.y[q], q
+    else:
+        return dataset.images_path[q], dataset.y[q], q
 
 # Server Business 4
 
 
-def active_learning_iteration(session_id, human_label: int, q: int):
+def active_learning_iteration(session_id, human_label: int, q: int, return_raw_features=False):
     dataset = get_dataset_of_session(session_id)
     dataset.add_human_prediction(human_label, q)
     q = generate_next_query(session_id, dataset)
     dataset.store()
-    return dataset.images_path[q], dataset.y[q], q
+    if return_raw_features:
+        return dataset.X[q,:], dataset.y[q], q
+    else:
+        return dataset.images_path[q], dataset.y[q], q
 
 # Server Business 5
 
 
-def test_time(session_id):
+def test_time(session_id, return_raw_features=False):
     dataset = get_dataset_of_session(session_id)
     test_indices = generate_test(dataset)
-    return [dataset.images_path[i] for i in dataset.test_indices], dataset.y[test_indices]
+    if return_raw_features:
+        return [dataset.X[i,:] for i in dataset.test_indices], dataset.y[test_indices]
+    else:
+        return [dataset.images_path[i] for i in dataset.test_indices], dataset.y[test_indices]
 
 # Server Business 6
 

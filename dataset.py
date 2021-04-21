@@ -15,18 +15,18 @@ class Dataset:
         self.unlabeled = unlabeled
         self.q = None
         self.human_pred = human_pred
-        print('labeled:', self.labeled)
-        print('unlabeled:', self.unlabeled)
+        # print('labeled:', self.labeled)
+        # print('unlabeled:', self.unlabeled)
 
     def update_labeled_set(self, q):
         self.q
         assert q in self.unlabeled
-        print('adding label', q)
+      #  print('adding label', q)
         self.labeled_size += 1
         self.unlabeled.remove(q)
         self.labeled.append(q)
-        print('labeled:', self.labeled)
-        print('unlabeled:', self.unlabeled)
+        # print('labeled:', self.labeled)
+        # print('unlabeled:', self.unlabeled)
 
     def add_human_prediction(self, human_pred, q):
         self.human_pred.append((q, human_pred))

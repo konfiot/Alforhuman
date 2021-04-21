@@ -36,13 +36,13 @@ def show_dataset(A):
 
 def generate_color_dataset(dataset_path, dataset_size, seed):
     A = create_color_task(seed)
-    show_dataset(A)
+   # show_dataset(A)
     max_step = A.shape[0]
     X = np.zeros((dataset_size, 3))
     y = []
     for i in range(dataset_size):
-        index_x = random.randint(0,max_step)
-        index_y = random.randint(0,max_step)
+        index_x = random.randint(0,max_step-1)
+        index_y = random.randint(0,max_step-1)
         X[i,:] = A[index_x,index_y,:]
         if index_x+index_y < max_step:
             label=0

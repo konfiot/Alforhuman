@@ -1,16 +1,17 @@
 from server_business import *
 import sys
 import os
+from generateColor import show_image
 # This is basically all frontend
 # Run to test locally, meant to simulate the website
 
-def show_to_the_user(images_path, y):
-    for i, x in enumerate(images_path):
-        print('x',x, ' label ', y[i] )
+def show_to_the_user(xs, y):
+    for i, x in enumerate(xs):
+        show_image(x, label=y[i])
 
 
 def what_is_this_bb(X_query):
-    print('X_query',X_query)
+    show_image(X_query)
 
 
 def it_was(true_y, human_label):
@@ -66,20 +67,21 @@ if __name__ == "__main__":
     # Initialize dataset, either a static or dynamic dataset but paths to images should be return
     initialize_dataset(session_id, dataset_type, dataset_path)
 
-    images_path_0, y_0 = get_first_images(session_id)
+    X_0, y_0 = get_first_images(session_id, return_raw_features=True)
     # display first images to the user
-    show_to_the_user(images_path_0, y_0)
+    show_to_the_user(X_0, y_0)
    
     # get from server first image to display
-    images_path_query, true_y, q = start_active_learning(session_id)
+    X_query, true_y, q = start_active_learning(session_id, return_raw_features=True)
+ 
     # get from the  user its classification
-    human_label = query_user(images_path_query, true_y)
-
+    human_label = query_user(X_query, true_y)
+  
     keepgoing = True
     counter = 0
     while keepgoing:
         X_query, true_y, q = active_learning_iteration(
-            session_id, human_label, q)
+            session_id, human_label, q, return_raw_features=True)
         human_label = query_user(X_query, true_y)
         counter += 1
         if counter == 5:
