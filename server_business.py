@@ -54,14 +54,13 @@ def active_learning_iteration(session_id, human_label: int, q: int, return_raw_f
 
 # Server Business 5
 
-
 def test_time(session_id, return_raw_features=False):
     dataset = get_dataset_of_session(session_id)
-    test_indices = generate_test(dataset)
+    
     if return_raw_features:
-        return [dataset.X[i,:] for i in dataset.test_indices], dataset.y[test_indices]
+        return [dataset.X[i,:] for i in dataset.test_indices], dataset.y[dataset.test_indices]
     else:
-        return [dataset.images_path[i] for i in dataset.test_indices], dataset.y[test_indices]
+        return [dataset.images_path[i] for i in dataset.test_indices], dataset.y[dataset.test_indices]
 
 # Server Business 6
 

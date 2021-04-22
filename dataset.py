@@ -15,6 +15,7 @@ class Dataset:
         self.unlabeled = unlabeled
         self.q = None
         self.human_pred = human_pred
+        self.test_indices = unlabeled
         # print('labeled:', self.labeled)
         # print('unlabeled:', self.unlabeled)
 
@@ -25,6 +26,7 @@ class Dataset:
         self.labeled_size += 1
         self.unlabeled.remove(q)
         self.labeled.append(q)
+        self.test_indices = self.unlabeled
         # print('labeled:', self.labeled)
         # print('unlabeled:', self.unlabeled)
 

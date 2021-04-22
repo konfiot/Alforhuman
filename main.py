@@ -1,6 +1,7 @@
 from server_business import *
 import sys
 import os
+import numpy as np
 from generateColor import show_image
 # This is basically all frontend
 # Run to test locally, meant to simulate the website
@@ -30,7 +31,7 @@ def build_user_form(questions):
     return user_form
 
 
-def query_user(X_query, true_y):
+def query_user(X_query, true_y=None):
     human_label = what_is_this_bb(X_query)
 
     for answer in sys.stdin:
@@ -43,7 +44,8 @@ def query_user(X_query, true_y):
             break
         else:
             print('input 0 or 1 plz')
-    it_was(true_y, human_label)
+    if true_y is not None:
+         it_was(true_y, human_label)
     return human_label
 
 
@@ -84,8 +86,18 @@ if __name__ == "__main__":
             session_id, human_label, q, return_raw_features=True)
         human_label = query_user(X_query, true_y)
         counter += 1
-        if counter == 5:
+        if counter == 2:
             keepgoing = False
     print("that's it thanks you")
     # TODO test phase
-    # X_test = test_time(session_id)
+    X_test, y_test = test_time(session_id, return_raw_features=True)
+    score = []
+    for  i, x in enumerate(X_test):
+        human_label = query_user(x)
+        true_label = y_test[i]
+        score.append(true_label==human_label)
+        if i==10:
+            break
+    print('your final score is', np.mean(score))
+
+        

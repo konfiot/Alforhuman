@@ -36,7 +36,7 @@ def show_dataset(A):
 
 def generate_color_dataset(dataset_path, dataset_size, seed):
     A = create_color_task(seed)
-   # show_dataset(A)
+    #show_dataset(A)
     max_step = A.shape[0]
     X = np.zeros((dataset_size, 3))
     y = []
@@ -56,6 +56,8 @@ def generate_color_dataset(dataset_path, dataset_size, seed):
     dataset_path = os.path.join('datasets', dataset_name_path)
     os.makedirs(dataset_path)
     # store all files and append list of paths
+   
+   
     images_path = []
     for i in range(dataset_size):
         filename = str(i)+'.png'
@@ -77,9 +79,10 @@ def generate_random_color(bias):
     if bias == 'blue':
         blue = 1
         red = 0.1
-    if bias == 'red':
+    if bias == 'red': # orange
         red = 1
-        green=0.1
+        green=0.2
+        blue = 0
     if bias == 'green':
         green = 1
         blue=0.1
