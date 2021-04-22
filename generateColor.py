@@ -71,7 +71,7 @@ def generate_color_dataset(dataset_path, dataset_size, seed):
 COLOR_MAX = 255
 
 
-def generate_random_color(bias):
+def generate_random_color(bias=None):
     blue = random.randint(0, COLOR_MAX)/COLOR_MAX
     red = random.randint(0, COLOR_MAX)/COLOR_MAX
     green = random.randint(0, COLOR_MAX)/COLOR_MAX
@@ -99,8 +99,8 @@ def get_color_matrix(colorfrom, colorto):
 def create_color_task(seed):
     # generate three random colors, that are different enough
     random.seed(seed)
-    color1 = generate_random_color(bias="blue")
-    color2 = generate_random_color(bias="red")
+    color1 = generate_random_color()
+    color2 = generate_random_color()
     
     A = get_color_matrix(color1, color2)
     return A

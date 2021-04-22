@@ -86,7 +86,7 @@ if __name__ == "__main__":
             session_id, human_label, q, return_raw_features=True)
         human_label = query_user(X_query, true_y)
         counter += 1
-        if counter == 2:
+        if counter == 5:
             keepgoing = False
     print("that's it thanks you")
     # TODO test phase
