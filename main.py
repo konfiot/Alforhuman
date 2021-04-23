@@ -61,13 +61,10 @@ if __name__ == "__main__":
         os.makedirs(dataset_path)
     print('trying out the ', dataset_type, 'dataset')
     al_type = random.randint(0, 1)
-    print(al_type)
-    al_type = 1
     # this is first query
     session_id, questions = start_session()
     # this should be replace by some form completion, the important is to obtain the user_form
-    user_form = build_user_form(questions)
-
+    user_form = None
     # send back the user_form to the server
     receive_form(session_id, user_form)
 
@@ -92,7 +89,7 @@ if __name__ == "__main__":
             session_id, human_label, q, return_raw_features=True)
         human_label = query_user(X_query, true_y)
         counter += 1
-        if counter == 5:
+        if counter == 2:
             keepgoing = False
 
     # TODO test phase
@@ -102,6 +99,6 @@ if __name__ == "__main__":
         human_label = query_user(x)
         true_label = y_test[i]
         score.append(true_label == human_label)
-        if i == 10:
+        if i == 3:
             break
     store_results(session_id, score, al_type)

@@ -3,6 +3,7 @@ from dataset import generate_initial_dataset, get_dataset_of_session
 from active_learning import generate_next_query
 import numpy as np
 import pickle as pk
+import os
 # Server Business 1
 
 
