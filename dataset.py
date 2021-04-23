@@ -5,8 +5,9 @@ import os
 
 
 class Dataset:
-    def __init__(self, session_id, X, y, images_path, labeled_size, labeled, unlabeled, human_pred=[], q=None):
+    def __init__(self, session_id, al_type, X, y, images_path, labeled_size, labeled, unlabeled, human_pred=[], q=None):
         self.session_id = session_id
+        self.al_type = al_type
         self.X = X  # matrix format for computer
         self.images_path = images_path  # path to png images to be displayed to user
         self.y = y
@@ -34,7 +35,7 @@ class Dataset:
         self.human_pred.append((q, human_pred))
 
     def store(self):
-        dataset_dict = {'X': self.X, 'y': self.y, 'images_path': self.images_path, 'labeled_size': self.labeled_size,
+        dataset_dict = {'al_type': self.al_type, 'X': self.X, 'y': self.y, 'images_path': self.images_path, 'labeled_size': self.labeled_size,
                         'labeled': self.labeled, 'unlabeled': self.unlabeled, 'human_pred': self.human_pred, 'q': self.q}
         file_path = get_dataset_file_path(self.session_id)
         with open(file_path, "wb") as f:
@@ -42,7 +43,7 @@ class Dataset:
 
 
 # Build or load Dataset object for a session id
-def generate_initial_dataset(session_id, dataset_type, dataset_path):
+def generate_initial_dataset(session_id, dataset_type, dataset_path, al_type):
     print(session_id)
     if dataset_type == 'color':  # Dynamically created dataset.
         dataset_size = 20
@@ -53,7 +54,7 @@ def generate_initial_dataset(session_id, dataset_type, dataset_path):
                    for _ in range(labeled_size)]
         unlabeled = [i for i in range(
             dataset_size) if i not in labeled]
-        dataset = Dataset(session_id=session_id, X=X, y=y, images_path=images_path,
+        dataset = Dataset(session_id=session_id, al_type=al_type, X=X, y=y, images_path=images_path,
                           labeled_size=labeled_size, labeled=labeled, unlabeled=unlabeled)
         return dataset
     else:
@@ -66,7 +67,7 @@ def get_dataset_of_session(session_id):
     with open(file_path, "rb") as f:
         dataset_dict = pk.load(f)
 
-    dataset = Dataset(session_id=session_id, X=dataset_dict['X'], y=dataset_dict['y'], images_path=dataset_dict['images_path'],
+    dataset = Dataset(session_id=session_id, al_type=dataset_dict['al_type'], X=dataset_dict['X'], y=dataset_dict['y'], images_path=dataset_dict['images_path'],
                       labeled_size=dataset_dict['labeled_size'], labeled=dataset_dict['labeled'], unlabeled=dataset_dict['unlabeled'], human_pred=dataset_dict['human_pred'], q=dataset_dict['q'])
     return dataset
 

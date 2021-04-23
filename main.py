@@ -2,9 +2,11 @@ from server_business import *
 import sys
 import os
 import numpy as np
+import random
 from generateColor import show_image
 # This is basically all frontend
 # Run to test locally, meant to simulate the website
+
 
 def show_to_the_user(xs, y):
     for i, x in enumerate(xs):
@@ -45,40 +47,44 @@ def query_user(X_query, true_y=None):
         else:
             print('input 0 or 1 plz')
     if true_y is not None:
-         it_was(true_y, human_label)
+        it_was(true_y, human_label)
     return human_label
 
 
 # Simulate the client side
 if __name__ == "__main__":
     dataset_type = 'color'
-    #TODO ensure folder datasets is created
+    # TODO ensure folder datasets is created
     dataset_path = 'dataset'
     if os.path.exists(dataset_path):
         print('creating the dataset folder since it wasn\'t there')
         os.makedirs(dataset_path)
-    print('trying out the ',dataset_type,'dataset')
+    print('trying out the ', dataset_type, 'dataset')
+    al_type = random.randint(0, 1)
+    print(al_type)
+    al_type = 1
     # this is first query
     session_id, questions = start_session()
     # this should be replace by some form completion, the important is to obtain the user_form
     user_form = build_user_form(questions)
-    
+
     # send back the user_form to the server
     receive_form(session_id, user_form)
-    
+
     # Initialize dataset, either a static or dynamic dataset but paths to images should be return
-    initialize_dataset(session_id, dataset_type, dataset_path)
+    initialize_dataset(session_id, dataset_type, dataset_path, al_type)
 
     X_0, y_0 = get_first_images(session_id, return_raw_features=True)
     # display first images to the user
     show_to_the_user(X_0, y_0)
-   
+
     # get from server first image to display
-    X_query, true_y, q = start_active_learning(session_id, return_raw_features=True)
- 
+    X_query, true_y, q = start_active_learning(
+        session_id, return_raw_features=True)
+
     # get from the  user its classification
     human_label = query_user(X_query, true_y)
-  
+
     keepgoing = True
     counter = 0
     while keepgoing:
@@ -88,16 +94,14 @@ if __name__ == "__main__":
         counter += 1
         if counter == 5:
             keepgoing = False
-    print("that's it thanks you")
+
     # TODO test phase
     X_test, y_test = test_time(session_id, return_raw_features=True)
     score = []
-    for  i, x in enumerate(X_test):
+    for i, x in enumerate(X_test):
         human_label = query_user(x)
         true_label = y_test[i]
-        score.append(true_label==human_label)
-        if i==10:
+        score.append(true_label == human_label)
+        if i == 10:
             break
-    print('your final score is', np.mean(score))
-
-        
+    store_results(session_id, score, al_type)

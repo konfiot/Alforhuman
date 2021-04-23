@@ -18,6 +18,8 @@ def store_image_return_path(x, file_path):
 def show_image(x, label=None):
     A = np.zeros((100, 100, 3))
     A[:, :, :] = x
+    plt.ion()
+    plt.show()
     plt.imshow(A)
     
     if label is None:
@@ -25,7 +27,8 @@ def show_image(x, label=None):
     else:
         plt.title('This is '+str(label))
     plt.tight_layout()
-    plt.show()
+    plt.draw()
+    plt.pause(2)
     plt.close()
 
 
