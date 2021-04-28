@@ -25,6 +25,7 @@ def user_form():
 			session[key] = request.form[key] # TODO : Sanitize
 
 	receive_form(session["id"], {k:session[k] for k in session["questions"].keys()})
+	initialize_dataset(session["id"], 'color', 'static/dataset/', 0)
 	return redirect("/show_samples")
 
 
@@ -33,7 +34,6 @@ def show_samples():
 	if "id" not in session:
 		return redirect("/")
 
-	initialize_dataset(session["id"], 'color', 'static/dataset/', 0)
 	dataset = get_first_images(session["id"])
 	print(dataset)
 	return render_template("show_samples.html", dataset=zip(*dataset))
