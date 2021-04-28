@@ -18,9 +18,9 @@
 				{% for X, Y in dataset %}
 				<div class="col">
 					<div class="card h-100">
-						<img src="/sample/{{ X }}" class="card-img-top"/> 
+						<img src="/{{ X }}" class="card-img-top"/> 
 						<div class="card-body">
-							<p class="card-text">Label : [[ Y ]].</p>
+							<p class="card-text">Label :{{ Y }}.</p>
 						</div>
 					</div>
 				</div>
