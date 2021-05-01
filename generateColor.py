@@ -28,7 +28,7 @@ def show_image(x, label=None):
         plt.title('This is '+str(label))
     plt.tight_layout()
     plt.draw()
-    plt.pause(1)
+    plt.pause(0.1)
     plt.close()
 
 
