@@ -1,4 +1,4 @@
-from server_business import start_session, receive_form
+from server_business import start_session, receive_form, initialize_dataset, get_first_images
 from flask import Flask, session, redirect, request, render_template
 import uuid
 app = Flask(__name__)
@@ -24,6 +24,8 @@ def user_form():
 		else:
 			session[key] = request.form[key] # TODO : Sanitize
 
+	receive_form(session["id"], {k:session[k] for k in session["questions"].keys()})
+	initialize_dataset(session["id"], 'color', 'static/dataset/', 0)
 	return redirect("/show_samples")
 
 
@@ -32,7 +34,8 @@ def show_samples():
 	if "id" not in session:
 		return redirect("/")
 
-	dataset = receive_form(session["id"], {k:session[k] for k in session["questions"].keys()})
+	dataset = get_first_images(session["id"])
+	print(dataset)
 	return render_template("show_samples.html", dataset=zip(*dataset))
 
 

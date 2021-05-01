@@ -56,8 +56,8 @@ def generate_color_dataset(dataset_path, dataset_size, seed):
 
     # Now we create a folder for the dataset and store the images
     dataset_name_path = 'color_'+str(seed)
-    dataset_path = os.path.join('datasets', dataset_name_path)
-    os.makedirs(dataset_path)
+    #dataset_path = os.path.join('datasets', dataset_name_path)
+    os.makedirs(dataset_path, exist_ok=True)
     # store all files and append list of paths
    
    
