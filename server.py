@@ -1,4 +1,4 @@
-from server_business import start_session, receive_form, initialize_dataset, get_first_images
+from server_business import start_session, receive_form, initialize_dataset, get_first_images, start_active_learning, get_dataset_of_session
 from flask import Flask, session, redirect, request, render_template
 import uuid
 app = Flask(__name__)
@@ -47,25 +47,27 @@ def show_question():
 	if "counter" not in session:
 		session["counter"] = 0
 
-	X_query, true_y, q = start_active_learning(session_id)
+	X_query, true_y, q = start_active_learning(session["id"])
 
-	session["true_y"] = true_y
+	session["true_y"] = int(true_y)
 	session["q"] = q
 	return render_template("show_question.html", X=X_query)
 
-@app.route("/get_answer/", methods=["POST"])
-def get_answer():
+@app.route("/answer_question/<answer>")
+def get_answer(answer):
 	if "id" not in session:
+		return redirect("/")
+	
+	if answer not in ["0", "1"]:
 		return redirect("/")
 
 	if ("counter" not in session
 	or "q" not in session
-	or "true_y" not in session
-	or "answer" not in request.form):
+	or "true_y" not in session):
 		return redirect("/show_question")
 
-	dataset = get_dataset_of_session(session_id)
-	dataset.add_human_prediction(request.form["answer"], session["q"])
+	dataset = get_dataset_of_session(session["id"])
+	dataset.add_human_prediction(answer, session["q"])
 
 	session["counter"] += 1
 
@@ -75,4 +77,6 @@ def get_answer():
 	return redirect("/show_question")
 
 
-
+@app.route("/finished")
+def finished():
+	return "kthxbye"
