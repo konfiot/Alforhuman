@@ -1,5 +1,10 @@
 # Alforhuman
 
+Run before anything :
+
+`$ python src/generateColor.py`
+
+
 Command line local version : 
 
 

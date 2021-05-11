@@ -4,7 +4,12 @@ import matplotlib.patches as patches
 import numpy as np
 import random
 import os
+import time
+import pickle as pk
 
+
+data_path = 'data'
+counter_file = os.path.join(data_path,"dataset_counter.txt")
 
 def store_image_return_path(x, file_path):
     A = np.zeros((100, 100, 3))
@@ -98,6 +103,7 @@ def get_color_matrix(colorfrom, colorto):
             scale = (i+j)/(2*steps)
             A[i, j, :] = colorfrom + (colorto - colorfrom)*scale
     return A
+
 def create_color_task(seed):
     # generate three random colors, that are different enough
     random.seed(seed)
@@ -107,10 +113,44 @@ def create_color_task(seed):
     A = get_color_matrix(color1, color2)
     return A
 
+def get_image_file_path(data_path, dataset_type, seed):
+    dataset_name_path = dataset_type+'_'+str(seed)
+    dataset_path = os.path.join(data_path, dataset_name_path)
+    return dataset_path
+    
+def get_next_dataset():
+    counter_file
+    f = open(counter_file, "r")
+    last_seed = int(f.read())
+  
+    dataset_path = get_image_file_path(data_path, dataset_type='color', seed=last_seed)
+    
+    data_file_path = os.path.join(dataset_path, 'data.pkl')
+    with open(data_file_path, "rb") as f:
+        dataset_data = pk.load(f)
+    with open(counter_file, "w") as f:
+        f.write(str(last_seed+1))
+    
+    return dataset_data['X'], dataset_data['y'], dataset_data['images_path']
+
 
 if __name__ == '__main__':
-    #create_color_task(2)
-    X, y, im_path = generate_color_dataset('test',20, 50)
+    # Generate next 10 datasets
+    NUM_DATASETS = 10
+    
+    dataset_size = 20
+    start_seed = int(time.time()* 10000000) # This should always increase
+    
+    with open(counter_file, "w") as f:
+        f.write(str(start_seed))
+    
+    for i in range(NUM_DATASETS):
+        seed = start_seed +i
+        dataset_path = get_image_file_path(data_path, dataset_type='color', seed=seed)
+       
+        X, y, images_path = generate_color_dataset(dataset_path,
+                                                   dataset_size=dataset_size, seed=seed)
+        dataset_data = {'X':X,'y':y, 'images_path':images_path}
+        with open(data_file_path, "wb") as f:
+            pk.dump(dataset_data, f)
 
-    for i in range(20):
-        show_image(X[i, :], y[i])

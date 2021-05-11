@@ -1,5 +1,5 @@
 from session_util import delete_folder_contents, generate_session_id, create_backend_session, generate_questions, store_form
-from src.experiment import generate_initial_dataset, get_experiment_of_session, get_image_file_path
+from src.experiment import link_dataset_to_session, get_experiment_of_session
 from src.active_learning import generate_next_query
 import numpy as np
 import pickle as pk
@@ -20,7 +20,7 @@ def receive_form(session_id, user_form):
 
 
 def initialize_dataset(session_id, dataset_type, dataset_path, al_type):
-    experiment = generate_initial_dataset(
+    experiment = link_dataset_to_session(
         session_id, dataset_type, dataset_path, al_type)
     experiment.store()
 
@@ -75,8 +75,3 @@ def store_score(session_id, score):
     experiment.set_score(score)
     experiment.store()
 
-
-def clean_session(session_id, data_path,dataset_type ):
-    dataset_path = get_image_file_path(data_path, dataset_type, session_id)
-    print('deleting files of dataset', dataset_path)
-    delete_folder_contents(dataset_path)

@@ -60,4 +60,4 @@ if __name__ == "__main__":
             break
     
     store_score(session_id, score)
-    clean_session(session_id, data_path,dataset_type )
+    

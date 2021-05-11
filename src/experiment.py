@@ -1,4 +1,4 @@
-from src.generateColor import generate_color_dataset
+from src.generateColor import get_next_dataset 
 import random
 import pickle as pk
 import os
@@ -42,15 +42,11 @@ class Experiment:
 
 
 # Build or load experiment object for a session id
-def generate_initial_dataset(session_id, dataset_type, data_path, al_type):
-    if dataset_type == 'color':  # Dynamically created dataset.
-        dataset_size = 20
-        seed = session_id
-        dataset_path = get_image_file_path(data_path, dataset_type, seed)
-        
-        X, y, images_path = generate_color_dataset(dataset_path,
-                                                   dataset_size=dataset_size, seed=seed)
+def link_dataset_to_session(session_id, dataset_type, data_path, al_type):
+    if dataset_type == 'color': 
         labeled_size = 2
+        X,y,images_path = get_next_dataset()
+        dataset_size = len(images_path)
         labeled = [random.randint(0, dataset_size-1)
                    for _ in range(labeled_size)]
         unlabeled = [i for i in range(
@@ -67,11 +63,6 @@ def get_experiment_of_session(session_id):
     with open(file_path, "rb") as f:
         experiment = pk.load(f)
     return experiment
-
-def get_image_file_path(data_path, dataset_type, seed):
-    dataset_name_path = dataset_type+'_'+str(seed)
-    dataset_path = os.path.join(data_path, dataset_name_path)
-    return dataset_path
 
 def get_dataset_file_path(session_id):
     path = os.path.join('session', str(session_id))
