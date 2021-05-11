@@ -4,6 +4,8 @@ import uuid
 app = Flask(__name__)
 app.secret_key = str(uuid.uuid1())# TODO: get from file
 
+DATASET_PATH = 'data'
+
 @app.route('/')
 def root():
 	if "id" not in session:
@@ -25,7 +27,7 @@ def user_form():
 			session[key] = request.form[key] # TODO : Sanitize
 
 	receive_form(session["id"], {k:session[k] for k in session["questions"].keys()})
-	initialize_dataset(session["id"], 'color', 'static/dataset/', 0)
+	initialize_dataset(session["id"], 'color', DATASET_PATH, 0)
 	return redirect("/show_samples")
 
 

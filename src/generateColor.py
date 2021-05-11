@@ -28,7 +28,7 @@ def show_image(x, label=None):
         plt.title('This is '+str(label))
     plt.tight_layout()
     plt.draw()
-    plt.pause(0.1)
+    plt.pause(0.5)
     plt.close()
 
 
@@ -55,8 +55,7 @@ def generate_color_dataset(dataset_path, dataset_size, seed):
     y = np.array(y)
 
     # Now we create a folder for the dataset and store the images
-    dataset_name_path = 'color_'+str(seed)
-    #dataset_path = os.path.join('datasets', dataset_name_path)
+    
     os.makedirs(dataset_path, exist_ok=True)
     # store all files and append list of paths
    

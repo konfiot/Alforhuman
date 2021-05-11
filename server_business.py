@@ -1,6 +1,6 @@
-from session_util import generate_session_id, create_backend_session, generate_questions, store_form
-from dataset import generate_initial_dataset, get_dataset_of_session
-from active_learning import generate_next_query
+from session_util import delete_folder_contents, generate_session_id, create_backend_session, generate_questions, store_form
+from src.experiment import generate_initial_dataset, get_experiment_of_session, get_image_file_path
+from src.active_learning import generate_next_query
 import numpy as np
 import pickle as pk
 import os
@@ -20,58 +20,63 @@ def receive_form(session_id, user_form):
 
 
 def initialize_dataset(session_id, dataset_type, dataset_path, al_type):
-    dataset = generate_initial_dataset(
+    experiment = generate_initial_dataset(
         session_id, dataset_type, dataset_path, al_type)
-    dataset.store()
+    experiment.store()
 
 
 def get_first_images(session_id, return_raw_features=False):
-    dataset = get_dataset_of_session(session_id)
+    experiment = get_experiment_of_session(session_id)
     if return_raw_features:
-        return [dataset.X[i, :] for i in dataset.labeled], dataset.y[dataset.labeled]
+        return [experiment.X[i, :] for i in experiment.labeled], experiment.y[experiment.labeled]
     else:
-        return [dataset.images_path[i] for i in dataset.labeled], dataset.y[dataset.labeled]
+        return [experiment.images_path[i] for i in experiment.labeled], experiment.y[experiment.labeled]
 # Server Business 3
 
 
 def start_active_learning(session_id, return_raw_features=False):
-    dataset = get_dataset_of_session(session_id)
-    q = generate_next_query(session_id, dataset)
-    dataset.store()
+    experiment = get_experiment_of_session(session_id)
+    q = generate_next_query(session_id, experiment)
+    experiment.store()
     if return_raw_features:
-        return dataset.X[q, :], dataset.y[q], q
+        return experiment.X[q, :], experiment.y[q], q
     else:
-        return dataset.images_path[q], dataset.y[q], q
+        return experiment.images_path[q], experiment.y[q], q
 
 # Server Business 4
 
 
 def active_learning_iteration(session_id, human_label: int, q: int, return_raw_features=False):
-    dataset = get_dataset_of_session(session_id)
-    dataset.add_human_prediction(human_label, q)
-    q = generate_next_query(session_id, dataset)
-    dataset.store()
+    experiment = get_experiment_of_session(session_id)
+    experiment.add_human_prediction(human_label, q)
+    q = generate_next_query(session_id, experiment)
+    experiment.store()
     if return_raw_features:
-        return dataset.X[q, :], dataset.y[q], q
+        return experiment.X[q, :], experiment.y[q], q
     else:
-        return dataset.images_path[q], dataset.y[q], q
+        return experiment.images_path[q], experiment.y[q], q
 
 # Server Business 5
 
 
 def test_time(session_id, return_raw_features=False):
-    dataset = get_dataset_of_session(session_id)
+    experiment = get_experiment_of_session(session_id)
 
     if return_raw_features:
-        return [dataset.X[i, :] for i in dataset.test_indices], dataset.y[dataset.test_indices]
+        return [experiment.X[i, :] for i in experiment.test_indices], experiment.y[experiment.test_indices]
     else:
-        return [dataset.images_path[i] for i in dataset.test_indices], dataset.y[dataset.test_indices]
+        return [experiment.images_path[i] for i in experiment.test_indices], experiment.y[experiment.test_indices]
 
 # Server Business 6
 
 
-def store_results(session_id, score, al_type):
-    result_dict = {'score': np.mean(score), 'al_type': al_type}
-    file_path = os.path.join('result',str(session_id)+'_result.pkl')
-    with open(file_path, "wb") as f:
-        pk.dump(result_dict, f)
+def store_score(session_id, score):
+    experiment = get_experiment_of_session(session_id)
+    experiment.set_score(score)
+    experiment.store()
+
+
+def clean_session(session_id, data_path,dataset_type ):
+    dataset_path = get_image_file_path(data_path, dataset_type, session_id)
+    print('deleting files of dataset', dataset_path)
+    delete_folder_contents(dataset_path)
