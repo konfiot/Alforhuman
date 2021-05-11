@@ -1,4 +1,4 @@
-from server_business import start_session, receive_form, initialize_dataset, get_first_images, start_active_learning, get_dataset_of_session
+from server_business import start_session, receive_form, initialize_dataset, get_first_images, start_active_learning, get_experiment_of_session
 from flask import Flask, session, redirect, request, render_template
 import uuid
 app = Flask(__name__)
@@ -68,7 +68,7 @@ def get_answer(answer):
 	or "true_y" not in session):
 		return redirect("/show_question")
 
-	dataset = get_dataset_of_session(session["id"])
+	dataset = get_experiment_of_session(session["id"])
 	dataset.add_human_prediction(answer, session["q"])
 
 	session["counter"] += 1

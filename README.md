@@ -8,7 +8,7 @@ Command line local version :
  
 Web-based local version : 
 
-`$ FLASK_APP=server.py`
+`$ export FLASK_APP=server.py`
 
 `$ flask run `
 
