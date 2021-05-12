@@ -136,6 +136,13 @@ def get_next_dataset():
 # Generate bunch of datasets
 if __name__ == '__main__':
     
+    data_path = 'data'
+
+    if not os.path.exists(data_path):
+        print('Creating the dataset folder since it wasn\'t there\n')
+        os.makedirs(data_path)
+
+
     NUM_DATASETS = 10
     dataset_size = 20
     start_seed = int(time.time()* 10000000) # This should always increase

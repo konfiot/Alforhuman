@@ -14,9 +14,6 @@ if __name__ == "__main__":
     data_path = 'data'
     number_of_queries = 2
 
-    if not os.path.exists(data_path):
-        print('Creating the dataset folder since it wasn\'t there\n')
-        os.makedirs(data_path)
    
     print('Trying out the', dataset_type, 'dataset')
     al_type = random.randint(0, 1) # Flip a coin to decide if we get Active Learning or Random 
