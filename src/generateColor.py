@@ -124,8 +124,8 @@ def get_next_dataset():
     last_seed = int(f.read())
   
     dataset_path = get_image_file_path(data_path, dataset_type='color', seed=last_seed)
-    
     data_file_path = os.path.join(dataset_path, 'data.pkl')
+
     with open(data_file_path, "rb") as f:
         dataset_data = pk.load(f)
     with open(counter_file, "w") as f:
@@ -133,11 +133,10 @@ def get_next_dataset():
     
     return dataset_data['X'], dataset_data['y'], dataset_data['images_path']
 
-
+# Generate bunch of datasets
 if __name__ == '__main__':
-    # Generate next 10 datasets
-    NUM_DATASETS = 10
     
+    NUM_DATASETS = 10
     dataset_size = 20
     start_seed = int(time.time()* 10000000) # This should always increase
     
@@ -145,12 +144,14 @@ if __name__ == '__main__':
         f.write(str(start_seed))
     
     for i in range(NUM_DATASETS):
+        print('Generating dataset',i+1,'/',NUM_DATASETS)
         seed = start_seed +i
         dataset_path = get_image_file_path(data_path, dataset_type='color', seed=seed)
        
         X, y, images_path = generate_color_dataset(dataset_path,
                                                    dataset_size=dataset_size, seed=seed)
         dataset_data = {'X':X,'y':y, 'images_path':images_path}
+        data_file_path = os.path.join(dataset_path, 'data.pkl')
         with open(data_file_path, "wb") as f:
             pk.dump(dataset_data, f)
 

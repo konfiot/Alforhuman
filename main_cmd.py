@@ -12,7 +12,8 @@ A command line version of the experiment.
 if __name__ == "__main__":
     dataset_type = 'color'
     data_path = 'data'
-    
+    number_of_queries = 2
+
     if not os.path.exists(data_path):
         print('Creating the dataset folder since it wasn\'t there\n')
         os.makedirs(data_path)
@@ -46,7 +47,7 @@ if __name__ == "__main__":
             session_id, human_label, q, return_raw_features=True)
         human_label = query_user(X_query, true_y)
         counter += 1
-        if counter == 2:
+        if counter == number_of_queries:
             keepgoing = False
 
     
@@ -56,7 +57,7 @@ if __name__ == "__main__":
         human_label = query_user(x)
         true_label = y_test[i]
         score.append(true_label == human_label)
-        if i == 3:
+        if i == 3: # stop after 3 for test
             break
     
     store_score(session_id, score)

@@ -4,7 +4,7 @@ import uuid
 app = Flask(__name__)
 app.secret_key = str(uuid.uuid1())# TODO: get from file
 
-DATASET_PATH = 'data'
+DATASET_PATH = 'data/'
 
 @app.route('/')
 def root():
@@ -37,7 +37,7 @@ def show_samples():
 		return redirect("/")
 
 	dataset = get_first_images(session["id"])
-	print(dataset)
+
 	return render_template("show_samples.html", dataset=zip(*dataset))
 
 
