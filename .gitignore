@@ -1,4 +1,6 @@
 *.pkl
+*.png
+*.txt
 data/* 
 # ignore dataset folder
 # Byte-compiled / optimized / DLL files
@@ -135,4 +137,4 @@ dmypy.json
 .*.un~
 .*.swp
 
- static/
+ /static/data/*

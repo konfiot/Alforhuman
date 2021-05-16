@@ -8,7 +8,7 @@ import time
 import pickle as pk
 
 
-data_path = 'data'
+data_path = 'static/data'
 counter_file = os.path.join(data_path,"dataset_counter.txt")
 
 def store_image_return_path(x, file_path):
@@ -136,8 +136,6 @@ def get_next_dataset():
 # Generate bunch of datasets
 if __name__ == '__main__':
     
-    data_path = 'data'
-
     if not os.path.exists(data_path):
         print('Creating the dataset folder since it wasn\'t there\n')
         os.makedirs(data_path)
