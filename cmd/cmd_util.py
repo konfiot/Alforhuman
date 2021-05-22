@@ -1,4 +1,4 @@
-from server_business import *
+
 import numpy as np
 from src.generateColor import show_image
 import sys

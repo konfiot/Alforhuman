@@ -36,7 +36,7 @@ def get_first_images(session_id, return_raw_features=False):
 
 def start_active_learning(session_id, return_raw_features=False):
     experiment = get_experiment_of_session(session_id)
-    q = generate_next_query(session_id, experiment)
+    q = generate_next_query( experiment)
     experiment.store()
     if return_raw_features:
         return experiment.X[q, :], experiment.y[q], q
@@ -49,7 +49,7 @@ def start_active_learning(session_id, return_raw_features=False):
 def active_learning_iteration(session_id, human_label: int, q: int, return_raw_features=False):
     experiment = get_experiment_of_session(session_id)
     experiment.add_human_prediction(human_label, q)
-    q = generate_next_query(session_id, experiment)
+    q = generate_next_query(experiment)
     experiment.store()
     if return_raw_features:
         return experiment.X[q, :], experiment.y[q], q
