@@ -8,7 +8,7 @@ Run before anything :
 Command line local version : 
 
 
-`$ python local/main_local.py`
+`$ python main_cmd.py`
 
  
 Web-based local version : 
