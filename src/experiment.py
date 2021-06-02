@@ -44,7 +44,7 @@ class Experiment:
 # Build or load experiment object for a session id
 def link_dataset_to_session(session_id, dataset_type, data_path, al_type):
     if dataset_type == 'color': 
-        labeled_size = 2
+        labeled_size = 3
         X,y,images_path = get_next_dataset()
         dataset_size = len(images_path)
         labeled = [random.randint(0, dataset_size-1)
