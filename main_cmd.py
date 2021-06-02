@@ -12,7 +12,7 @@ if __name__ == "__main__":
     dataset_type = 'color'
     data_path = 'data'
     num_al_points = 5
-    num_test_point = 3
+    num_test_point = 5
     print('Trying out the', dataset_type, 'dataset')
     # Flip a coin to decide if we get Active Learning or Random
     al_type = random.randint(0, 1)
