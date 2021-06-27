@@ -55,12 +55,12 @@ def show_question():
 	session["q"] = q
 	return render_template("show_question.html", X=X_query)
 
-@app.route("/answer_question/<answer>")
+@app.route("/answer_question/<int:answer>")
 def get_answer(answer):
 	if "id" not in session:
 		return redirect("/")
 	
-	if answer not in ["0", "1"]:
+	if answer not in [0, 1]:
 		return redirect("/")
 
 	if ("counter" not in session
@@ -76,9 +76,24 @@ def get_answer(answer):
 	if session["counter"] > 5:
 		return redirect("/finished")
 
-	return redirect("/show_question")
+	good = int(session['true_y'] == answer)
 
+	return redirect(f"/feedback/{good}")
+
+@app.route("/feedback/<int:good>")
+def feedback(good):
+	if "id" not in session:
+		print("ID not in session")
+		return redirect("/")
+	
+	if good not in [0, 1]:
+		return redirect("/")
+
+	return render_template("show_result.html", result=good)
 
 @app.route("/finished")
 def finished():
+	if "id" not in session:
+		return redirect("/")
+
 	return "kthxbye"
