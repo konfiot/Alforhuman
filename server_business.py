@@ -4,7 +4,6 @@ from src.active_learning import generate_next_query
 import numpy as np
 import pickle as pk
 import os
-# Server Business 1
 
 
 def start_session():
@@ -13,15 +12,13 @@ def start_session():
     questions = generate_questions()
     return session_id, questions
 
-
-# Server Business 2
 def receive_form(session_id, user_form):
     store_form(session_id, user_form)
 
 
-def initialize_dataset(session_id, dataset_type, dataset_path, al_type):
+def initialize_dataset(session_id, dataset_type, al_type, dataset_path=None):
     experiment = link_dataset_to_session(
-        session_id, dataset_type, dataset_path, al_type)
+        session_id, dataset_type, al_type, dataset_path)
     experiment.store()
 
 
@@ -31,8 +28,6 @@ def get_first_images(session_id, return_raw_features=False):
         return [experiment.X[i, :] for i in experiment.labeled], experiment.y[experiment.labeled]
     else:
         return [experiment.images_path[i] for i in experiment.labeled], experiment.y[experiment.labeled]
-# Server Business 3
-
 
 def start_active_learning(session_id, return_raw_features=False):
     experiment = get_experiment_of_session(session_id)
@@ -43,12 +38,14 @@ def start_active_learning(session_id, return_raw_features=False):
     else:
         return experiment.images_path[q], experiment.y[q], q
 
-# Server Business 4
 
-
-def active_learning_iteration(session_id, human_label: int, q: int, return_raw_features=False):
+def store_active_learning_pred(session_id, human_label: int, q: int):
     experiment = get_experiment_of_session(session_id)
     experiment.add_human_prediction(human_label, q)
+    experiment.store()
+
+def active_learning_iteration(session_id, return_raw_features=False):
+    experiment = get_experiment_of_session(session_id)
     q = generate_next_query(experiment)
     experiment.store()
     if return_raw_features:
@@ -56,22 +53,25 @@ def active_learning_iteration(session_id, human_label: int, q: int, return_raw_f
     else:
         return experiment.images_path[q], experiment.y[q], q
 
-# Server Business 5
 
 
 def test_time(session_id, return_raw_features=False):
     experiment = get_experiment_of_session(session_id)
 
     if return_raw_features:
-        return [experiment.X[i, :] for i in experiment.test_indices], experiment.y[experiment.test_indices]
+        return [experiment.X[i, :] for i in experiment.test_indices], experiment.y[experiment.test_indices], experiment.test_indices
     else:
-        return [experiment.images_path[i] for i in experiment.test_indices], experiment.y[experiment.test_indices]
-
-# Server Business 6
+        return [experiment.images_path[i] for i in experiment.test_indices], experiment.y[experiment.test_indices], experiment.test_indices
 
 
-def store_score(session_id, score):
+def store_pred(session_id, human_label_test, q):
     experiment = get_experiment_of_session(session_id)
-    experiment.set_score(score)
+    experiment.add_test_human_pred(human_label_test, q)
     experiment.store()
 
+
+
+def signal_end_experiment(session_id):
+    experiment = get_experiment_of_session(session_id)
+    experiment.set_experiment_completed()
+    experiment.store()

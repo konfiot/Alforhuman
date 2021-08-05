@@ -1,11 +1,13 @@
-from server_business import start_session, receive_form, initialize_dataset, get_first_images, start_active_learning, get_experiment_of_session
+from server_business import *
 from flask import Flask, session, redirect, request, render_template
 import uuid
+import random
 app = Flask(__name__)
 app.secret_key = str(uuid.uuid1())# TODO: get from file
 
 DATASET_PATH = 'data/'
-
+NUM_TRAIN_EXAMPLES =  5
+NUM_TEST_EXAMPLES = 5
 @app.route('/')
 def root():
 	if "id" not in session:
@@ -27,7 +29,8 @@ def user_form():
 			session[key] = request.form[key] # TODO : Sanitize
 
 	receive_form(session["id"], {k:session[k] for k in session["questions"].keys()})
-	initialize_dataset(session["id"], 'color', DATASET_PATH, 0)
+	al_type = random.randint(0, 1) # Flip a coin to decide if we get Active Learning or Random
+	initialize_dataset(session["id"], 'color', al_type, DATASET_PATH)
 	return redirect("/show_samples")
 
 
@@ -36,9 +39,9 @@ def show_samples():
 	if "id" not in session:
 		return redirect("/")
 
-	dataset = get_first_images(session["id"])
+	initial_dataset = get_first_images(session["id"])
 
-	return render_template("show_samples.html", dataset=zip(*dataset))
+	return render_template("show_samples.html", dataset=zip(*initial_dataset))
 
 
 @app.route("/show_question/")
@@ -46,11 +49,11 @@ def show_question():
 	if "id" not in session:
 		return redirect("/")
 
-	if "counter" not in session:
+	if ("counter" not in session):
 		session["counter"] = 0
-
-	X_query, true_y, q = start_active_learning(session["id"])
-
+		X_query, true_y, q = start_active_learning(session["id"]) # get first query
+	else:
+		X_query, true_y, q = active_learning_iteration(session["id"]) # get next query
 	session["true_y"] = int(true_y)
 	session["q"] = q
 	return render_template("show_question.html", X=X_query)
@@ -67,18 +70,17 @@ def get_answer(answer):
 	or "q" not in session
 	or "true_y" not in session):
 		return redirect("/show_question")
-
-	dataset = get_experiment_of_session(session["id"])
-	dataset.add_human_prediction(answer, session["q"])
-
+	
+	store_active_learning_pred(session["id"], answer, session["q"]) # store previous answer
 	session["counter"] += 1
-
-	if session["counter"] > 5:
+	if session["counter"] < NUM_TRAIN_EXAMPLES: # train phase, show feedback
+		good = int(session['true_y'] == answer)
+		return redirect(f"/feedback/{good}")
+	elif session["counter"] < NUM_TRAIN_EXAMPLES + NUM_TEST_EXAMPLES: # test phase, dont show feedback directly ask other question. TODO show question with flag indicating that it is test time
+		return redirect("/show_question")
+	else:
 		return redirect("/finished")
-
-	good = int(session['true_y'] == answer)
-
-	return redirect(f"/feedback/{good}")
+	
 
 @app.route("/feedback/<int:good>")
 def feedback(good):
@@ -95,5 +97,5 @@ def feedback(good):
 def finished():
 	if "id" not in session:
 		return redirect("/")
-
+	signal_end_experiment(session["id"])
 	return "kthxbye"

@@ -33,7 +33,7 @@ def show_image(x, label=None):
         plt.title('This is '+str(label))
     plt.tight_layout()
     plt.draw()
-    plt.pause(1.5)
+    plt.pause(0.1)
     plt.close()
 
 
@@ -133,7 +133,7 @@ def get_next_dataset():
     
     return dataset_data['X'], dataset_data['y'], dataset_data['images_path']
 
-# Generate bunch of datasets
+# Generate bunch of datasets. created in data_path, create the counter file.
 if __name__ == '__main__':
     
     if not os.path.exists(data_path):

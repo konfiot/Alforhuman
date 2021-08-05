@@ -6,53 +6,59 @@ import os
 DYNAMIC_DATASET = ['color']
 
 class Experiment:
-    def __init__(self, session_id, al_type, X, y, images_path, labeled_size, labeled, unlabeled, human_pred=[], q=None, score=None):
+    def __init__(self, session_id, al_type, X, y, images_path, init_labeled_size, labeled, unlabeled):
         self.session_id = session_id
         self.al_type = al_type
         self.X = X  # matrix format for computer
         self.images_path = images_path  # path to png images to be displayed to user
-        self.y = y
-        self.labeled_size = labeled_size
-        self.labeled = labeled
-        self.unlabeled = unlabeled
-        self.q = q
-        self.human_pred = human_pred
+        self.y = y # list of labels
+        self.init_labeled_size = init_labeled_size # size of the label set showed at the beginning
+        self.labeled = labeled # list of labeled_index
+        self.labeled_size  = len(self.labeled)
+        self.unlabeled = unlabeled # list of unlabeled_index
         self.test_indices = unlabeled
-        self.score = score
-     
+        self.list_human_pred_test = [] # list of tuple  (index, human label pred)
+        self.list_human_pred_train = [] # list of tuple  (index, human label pred)
+        self.experiment_completed = False
 
     def update_labeled_set(self, q):
-        self.q
+        self.q = q
         assert q in self.unlabeled
         self.labeled_size += 1
         self.unlabeled.remove(q)
         self.labeled.append(q)
         self.test_indices = self.unlabeled
 
-    def add_human_prediction(self, human_pred, q):
-        self.human_pred.append((q, human_pred))
+    def add_human_prediction(self, human_pred, q): # add prediction of human during the training phase (the feedback is given)
+        self.list_human_pred_train.append((q, human_pred))
 
-    def set_score(self, score):
-        self.score = score
+    def add_test_human_pred(self, human_pred_test, q): # add prediction at test time
+        self.list_human_pred_test.append((q, human_pred_test))
+    
+    def set_experiment_completed(self):
+        self.experiment_completed = True
+        
 
     def store(self):
         file_path = get_dataset_file_path(self.session_id)
         with open(file_path, "wb") as f:
             pk.dump(self, f)
+    
 
 
-# Build or load experiment object for a session id
-def link_dataset_to_session(session_id, dataset_type, data_path, al_type):
+
+# Build experiment object for a session id. dataset_path unusued for now
+def link_dataset_to_session(session_id, dataset_type, al_type, dataset_path):
     if dataset_type == 'color': 
-        labeled_size = 3
+        init_labeled_size = 3
         X,y,images_path = get_next_dataset()
         dataset_size = len(images_path)
         labeled = [random.randint(0, dataset_size-1)
-                   for _ in range(labeled_size)]
+                   for _ in range(init_labeled_size)]
         unlabeled = [i for i in range(
             dataset_size) if i not in labeled]
         experiment = Experiment(session_id=session_id, al_type=al_type, X=X, y=y, images_path=images_path,
-                          labeled_size=labeled_size, labeled=labeled, unlabeled=unlabeled)
+                          init_labeled_size=init_labeled_size, labeled=labeled, unlabeled=unlabeled)
         return experiment
     else:
         return NotImplementedError
