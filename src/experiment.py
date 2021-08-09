@@ -19,6 +19,7 @@ class Experiment:
         self.test_indices = unlabeled
         self.list_human_pred_test = [] # list of tuple  (index, human label pred)
         self.list_human_pred_train = [] # list of tuple  (index, human label pred)
+        self.test_index = 0 # keep track of which test images has been shown for server version
         self.experiment_completed = False
 
     def update_labeled_set(self, q):
@@ -38,9 +39,19 @@ class Experiment:
     def set_experiment_completed(self):
         self.experiment_completed = True
         
+    def increment_test_index(self):
+        self.test_index = self.test_index+1
 
     def store(self):
         file_path = get_dataset_file_path(self.session_id)
+        print('label',self.labeled)
+        print('labeled_size',self.labeled_size)
+        print('unlabeled',self.unlabeled)
+        print('test_indices',self.test_indices)
+        print('list_human_pred_test',self.list_human_pred_test)
+        print('list_human_pred_train',self.list_human_pred_train)
+        print('test_index',self.test_index)
+        print('----------------')
         with open(file_path, "wb") as f:
             pk.dump(self, f)
     
@@ -53,6 +64,7 @@ def link_dataset_to_session(session_id, dataset_type, al_type, dataset_path):
         init_labeled_size = 3
         X,y,images_path = get_next_dataset()
         dataset_size = len(images_path)
+       
         labeled = [random.randint(0, dataset_size-1)
                    for _ in range(init_labeled_size)]
         unlabeled = [i for i in range(

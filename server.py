@@ -40,7 +40,8 @@ def show_samples():
 		return redirect("/")
 
 	initial_dataset = get_first_images(session["id"])
-
+	print('test')
+	print(initial_dataset)
 	return render_template("show_samples.html", dataset=zip(*initial_dataset))
 
 
@@ -52,8 +53,11 @@ def show_question():
 	if ("counter" not in session):
 		session["counter"] = 0
 		X_query, true_y, q = start_active_learning(session["id"]) # get first query
+	elif session["counter"] < NUM_TRAIN_EXAMPLES:# get next query, still in train phase
+		X_query, true_y, q = active_learning_iteration(session["id"]) 
 	else:
-		X_query, true_y, q = active_learning_iteration(session["id"]) # get next query
+		X_query, true_y, q = test_iteration(session["id"]) 
+		
 	session["true_y"] = int(true_y)
 	session["q"] = q
 	return render_template("show_question.html", X=X_query)

@@ -20,6 +20,7 @@ def generate_next_query(experiment):
         
         query_idx, _ = learner.query(X_pool)
         q = experiment.unlabeled[query_idx[0]]
+        print(q)
     experiment.update_labeled_set(q)
     return q
 

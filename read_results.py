@@ -11,4 +11,6 @@ if __name__=="__main__":
     with open(file_path, "rb") as f:
         experiment = pk.load(f)
     
-    print(score)
+    print(experiment.experiment_completed)
+    print(experiment.list_human_pred_train)
+    print(experiment.list_human_pred_test)

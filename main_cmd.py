@@ -47,15 +47,17 @@ if __name__ == "__main__":
         if counter == num_al_points:
             keepgoing = False
 
-    X_test, y_test, test_index = test_time(session_id, return_raw_features=True)
     
-   
-    for i, x in enumerate(X_test):
-        human_label_test = query_user(x)
-        true_label = y_test[i]
-        store_pred(session_id, human_label_test,test_index[i])
-        if i == num_test_point:  # stop after num_test_point for test
-            break
+    counter = 0
+    keepgoing = True
+    while keepgoing:
+        X_query, true_y, q = test_iteration(session_id,  return_raw_features=True)
+        human_label_test = query_user(X_query)
+        store_pred(session_id, human_label_test,q)
+        counter += 1
+        if counter == num_test_point:
+            keepgoing = False
+
 
     signal_end_experiment(session_id)
     print('FINISHED')

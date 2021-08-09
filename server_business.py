@@ -54,14 +54,27 @@ def active_learning_iteration(session_id, return_raw_features=False):
         return experiment.images_path[q], experiment.y[q], q
 
 
-
-def test_time(session_id, return_raw_features=False):
+def test_iteration(session_id, return_raw_features=False):
     experiment = get_experiment_of_session(session_id)
-
+    test_index = experiment.test_index
+    i  = experiment.test_indices[test_index]
+    experiment.increment_test_index()
+    experiment.store()
     if return_raw_features:
-        return [experiment.X[i, :] for i in experiment.test_indices], experiment.y[experiment.test_indices], experiment.test_indices
+        return experiment.X[i, : ], experiment.y[i], i
     else:
-        return [experiment.images_path[i] for i in experiment.test_indices], experiment.y[experiment.test_indices], experiment.test_indices
+        return experiment.images_path[i, : ], experiment.y[i], i
+    
+    
+
+
+# def test_time(session_id, return_raw_features=False):
+#     experiment = get_experiment_of_session(session_id)
+
+#     if return_raw_features:
+#         return [experiment.X[i, :] for i in experiment.test_indices], experiment.y[experiment.test_indices], experiment.test_indices
+#     else:
+#         return [experiment.images_path[i] for i in experiment.test_indices], experiment.y[experiment.test_indices], experiment.test_indices
 
 
 def store_pred(session_id, human_label_test, q):
