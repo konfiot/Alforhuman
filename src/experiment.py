@@ -64,9 +64,7 @@ def link_dataset_to_session(session_id, dataset_type, al_type, dataset_path):
         init_labeled_size = 3
         X,y,images_path = get_next_dataset()
         dataset_size = len(images_path)
-       
-        labeled = [random.randint(0, dataset_size-1)
-                   for _ in range(init_labeled_size)]
+        labeled = random.sample(range(dataset_size), init_labeled_size)
         unlabeled = [i for i in range(
             dataset_size) if i not in labeled]
         experiment = Experiment(session_id=session_id, al_type=al_type, X=X, y=y, images_path=images_path,
