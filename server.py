@@ -75,14 +75,18 @@ def get_answer(answer):
 	or "true_y" not in session):
 		return redirect("/show_question")
 	
-	store_active_learning_pred(session["id"], answer, session["q"]) # store previous answer
-	session["counter"] += 1
+	
 	if session["counter"] < NUM_TRAIN_EXAMPLES: # train phase, show feedback
+		store_active_learning_pred(session["id"], answer, session["q"]) # store previous answer
+		session["counter"] += 1
 		good = int(session['true_y'] == answer)
 		return redirect(f"/feedback/{good}")
 	elif session["counter"] < NUM_TRAIN_EXAMPLES + NUM_TEST_EXAMPLES: # test phase, dont show feedback directly ask other question. TODO show question with flag indicating that it is test time
+		session["counter"] += 1
+		store_pred(session["id"], answer, session["q"]) # store previous answer
 		return redirect("/show_question")
 	else:
+		session["counter"] += 1
 		return redirect("/finished")
 	
 

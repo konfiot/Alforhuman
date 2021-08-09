@@ -63,7 +63,7 @@ def test_iteration(session_id, return_raw_features=False):
     if return_raw_features:
         return experiment.X[i, : ], experiment.y[i], i
     else:
-        return experiment.images_path[i, : ], experiment.y[i], i
+        return experiment.images_path[i], experiment.y[i], i
     
     
 
