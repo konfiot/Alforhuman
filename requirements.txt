@@ -3,3 +3,5 @@ flask
 numpy
 matplotlib
 modAL
+redis
+
