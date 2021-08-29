@@ -1,6 +1,5 @@
 *.pkl
 *.png
-*.txt
 data/* 
 # ignore dataset folder
 # Byte-compiled / optimized / DLL files
