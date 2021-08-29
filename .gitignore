@@ -1,6 +1,6 @@
 *.pkl
 *.png
-data/* 
+static/* 
 # ignore dataset folder
 # Byte-compiled / optimized / DLL files
 
