@@ -2,8 +2,21 @@ from flask import Flask, session, redirect, request, render_template
 import uuid
 import random
 from server_business.server_business import ServerBusiness
+import os
+import redis
+
+redis_url = os.getenv('REDISTOGO_URL', '')
+
 app = Flask(__name__)
-app.secret_key = str(uuid.uuid1())  # TODO: get from file
+
+if redis_url :
+	app.config['SESSION_TYPE'] = 'redis'
+	app.config['SESSION_PERMANENT'] = False
+	app.config['SESSION_USE_SIGNER'] = True
+	app.config['SESSION_REDIS'] = redis.from_url(redis_url)
+
+
+app.secret_key = os.getenv('APP_SECRET', str(uuid.uuid1()))
 
 DATASET_PATH = 'data/'
 NUM_TRAIN_EXAMPLES = 5
