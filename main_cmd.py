@@ -12,8 +12,8 @@ A command line version of the experiment.
 
 if __name__ == "__main__":
     dataset_type = 'color'
-    num_al_points = 5
-    num_test_point = 5
+    NUM_TRAIN_EXAMPLES = 5
+    NUM_TEST_EXAMPLES = 5
     serverBusiness = ServerBusiness(db=True) # change for local storage or use db
     print('Trying out the', dataset_type, 'dataset')
    
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         X_query, true_y, q = serverBusiness.active_learning_iteration(session_id, return_raw_features=True) # get next query
         human_label = query_user(X_query, true_y)
         counter += 1
-        if counter == num_al_points:
+        if counter == NUM_TRAIN_EXAMPLES:
             keepgoing = False
 
     
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         human_label_test = query_user(X_query)
         serverBusiness.store_pred(session_id, human_label_test,q)
         counter += 1
-        if counter == num_test_point:
+        if counter == NUM_TEST_EXAMPLES:
             keepgoing = False
 
 
