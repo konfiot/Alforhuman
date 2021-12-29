@@ -1,10 +1,11 @@
 from src.generateColor import get_next_dataset
-from src.db_connection import store_db, get_experiment_from_db, TABLE_EXPERIMENT, TABLE_DATABASE
+from src.db_connection import store_db, get_experiment_from_db, update_experiment_db_entry, TABLE_EXPERIMENT, TABLE_DATABASE
 import random
 import time
 import pickle as pk
 import os
-
+import numpy as np
+from bson.binary import Binary
 DYNAMIC_DATASET = ['color']
 
 
@@ -48,13 +49,27 @@ class Experiment:
 
     def increment_test_index(self):
         self.test_index = self.test_index+1
+
     def get_db_entry(self):
-        experiment_entry = self.__dict__
-        return experiment_entry 
+        experiment_dict = self.__dict__
+        for key, val in experiment_dict.items():  # check that each entry can be put in mangodb, conversion if necessary
+            if type(val).__module__ == np.__name__:  # serialize 2D array y numpy
+                experiment_dict[key] = Binary(pk.dumps(val, protocol=2))
+        return experiment_dict
+
+    def get_updated_dict(self):
+        updated_dict = {'labeled': self.labeled, 'labeled_size': self.labeled_size, 'unlabeled': self.unlabeled, 'test_indices': self.test_indices,
+                        'list_human_pred_test': self.list_human_pred_test, 'test_index': self.test_index, 'experiment_completed': self.experiment_completed}
+
+        return updated_dict
+
     def store(self, db):
+
         if db:
-            return NotImplementedError
-            # TODO get database from db
+            print('STORING DB')
+            updated_dict = self.get_updated_dict()
+            update_experiment_db_entry(self.session_id, updated_dict)
+            print('Success')
         else:
             file_path = get_dataset_file_path(self.session_id)
             with open(file_path, "wb") as f:
@@ -68,11 +83,16 @@ class Experiment:
         print('test_index', self.test_index)
         print('----------------')
 
+
 class ExperimentDB(Experiment):
     def __init__(self, dict1):
+        dict1['X'] = pk.loads(dict1['X'])
+        dict1['y'] = pk.loads(dict1['y'])
         self.__dict__.update(dict1)
 
 # Build experiment object for a session id. dataset_path unusued for now
+
+
 def link_dataset_to_session(session_id, dataset_type, al_type, dataset_path, db):
     if dataset_type == 'color':
         init_labeled_size = 3
@@ -83,18 +103,22 @@ def link_dataset_to_session(session_id, dataset_type, al_type, dataset_path, db)
             dataset_size) if i not in labeled]
         experiment = Experiment(session_id=session_id, al_type=al_type, X=X, y=y, images_path=images_path,
                                 init_labeled_size=init_labeled_size, labeled=labeled, unlabeled=unlabeled)
-        
+
         if db:
-            database_entry = {'type':dataset_type, 'X':X, 'y':y, 'size':dataset_size }
-            db_id = store_db(collection_name=TABLE_DATABASE,dict_entry=database_entry)
-            experiment_entry = experiment.get_db_entry()
-            experiment_entry['db_id'] = db_id
-            store_db(collection_name=TABLE_EXPERIMENT,dict_entry=experiment_entry)
+            database_entry = {'type': dataset_type, 'X': Binary(pk.dumps(
+                X, protocol=2)), 'y': Binary(pk.dumps(y, protocol=2)), 'size': dataset_size}
+            db_id = store_db(collection_name=TABLE_DATABASE,
+                             dict_entry=database_entry)
+            experiment_dict = experiment.get_db_entry()
+            experiment_dict['db_id'] = db_id
+            store_db(collection_name=TABLE_EXPERIMENT,
+                     dict_entry=experiment_dict)
         return experiment
     else:
         return NotImplementedError
 
 # Return the dataset assigned to a particular session id
+
 
 def get_experiment_of_session(session_id, db):
     if db:

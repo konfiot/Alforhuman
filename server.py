@@ -21,7 +21,7 @@ app.secret_key = os.getenv('APP_SECRET', str(uuid.uuid1()))
 DATASET_PATH = 'data/'
 NUM_TRAIN_EXAMPLES = 5
 NUM_TEST_EXAMPLES = 5
-serverBusiness = ServerBusiness(db=False) # change for local storage or use db
+serverBusiness = ServerBusiness(db=True) # change for local storage or use db
 
 
 @app.route('/')

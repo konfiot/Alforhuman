@@ -22,25 +22,21 @@ TABLE_EXPERIMENT = 'experiment'
 TABLE_DATABASE = 'database'
 
 def store_db(collection_name, dict_entry):
-    
-    mycol = DB[collection_name]
-    for key, val in dict_entry.items(): # check that each entry can be put in mangodb, conversion if necessary
-        print(key, type(val))
-
-        if type(val).__module__ == np.__name__: # serialize 2D array y numpy
-            dict_entry[key] = Binary( pk.dumps(val, protocol=2)) 
-        
-    
-    x = mycol.insert_one(dict_entry)
+    col = DB[collection_name]
+    x = col.insert_one(dict_entry)
     return x.inserted_id
 def get_experiment_from_db(session_id):
     experiment_table = DB[TABLE_EXPERIMENT]
-    experiment_dict = [x for x in experiment_table.find({},{ "session_id": session_id})]
-    print(experiment_dict)
-    assert len(experiment_dict) ==1
-    experiment_dict = experiment_dict[0]
-    for key, val in experiment_dict.items(): # check that each entry can be put in mangodb, conversion if necessary
-        print(key, type(val))
-        if type(val).__module__ == Binary.__name__: 
-            experiment_dict[key] =  pk.loads(val)# serialize 2D array y numpy
+    myquery = {"session_id": session_id}
+    experiment_dict = experiment_table.find_one(myquery)
+    #TODO add checkhere that experiment_dict is not empty
+    
+   
     return experiment_dict
+
+def update_experiment_db_entry(session_id, updated_dict):
+    col = DB[TABLE_EXPERIMENT]
+    myquery = {"session_id":session_id}
+    newvalues = { "$set": updated_dict }
+
+    col.update_one(myquery, newvalues)
