@@ -1,5 +1,7 @@
 from src.generateColor import get_next_dataset
+from src.db_connection import store_db, get_experiment_from_db, TABLE_EXPERIMENT, TABLE_DATABASE
 import random
+import time
 import pickle as pk
 import os
 
@@ -46,7 +48,9 @@ class Experiment:
 
     def increment_test_index(self):
         self.test_index = self.test_index+1
-
+    def get_db_entry(self):
+        experiment_entry = self.__dict__
+        return experiment_entry 
     def store(self, db):
         if db:
             return NotImplementedError
@@ -64,33 +68,39 @@ class Experiment:
         print('test_index', self.test_index)
         print('----------------')
 
+class ExperimentDB(Experiment):
+    def __init__(self, dict1):
+        self.__dict__.update(dict1)
 
 # Build experiment object for a session id. dataset_path unusued for now
 def link_dataset_to_session(session_id, dataset_type, al_type, dataset_path, db):
-    if db:
-        return NotImplementedError
-        # TODO get database from db
+    if dataset_type == 'color':
+        init_labeled_size = 3
+        X, y, images_path = get_next_dataset()
+        dataset_size = len(images_path)
+        labeled = random.sample(range(dataset_size), init_labeled_size)
+        unlabeled = [i for i in range(
+            dataset_size) if i not in labeled]
+        experiment = Experiment(session_id=session_id, al_type=al_type, X=X, y=y, images_path=images_path,
+                                init_labeled_size=init_labeled_size, labeled=labeled, unlabeled=unlabeled)
+        
+        if db:
+            database_entry = {'type':dataset_type, 'X':X, 'y':y, 'size':dataset_size }
+            db_id = store_db(collection_name=TABLE_DATABASE,dict_entry=database_entry)
+            experiment_entry = experiment.get_db_entry()
+            experiment_entry['db_id'] = db_id
+            store_db(collection_name=TABLE_EXPERIMENT,dict_entry=experiment_entry)
+        return experiment
     else:
-        if dataset_type == 'color':
-            init_labeled_size = 3
-            X, y, images_path = get_next_dataset()
-            dataset_size = len(images_path)
-            labeled = random.sample(range(dataset_size), init_labeled_size)
-            unlabeled = [i for i in range(
-                dataset_size) if i not in labeled]
-            experiment = Experiment(session_id=session_id, al_type=al_type, X=X, y=y, images_path=images_path,
-                                    init_labeled_size=init_labeled_size, labeled=labeled, unlabeled=unlabeled)
-            return experiment
-        else:
-            return NotImplementedError
+        return NotImplementedError
 
 # Return the dataset assigned to a particular session id
 
-
 def get_experiment_of_session(session_id, db):
     if db:
-        return NotImplementedError
-        # TODO get database from db with session id
+        experiment_dict = get_experiment_from_db(session_id)
+        experiment = ExperimentDB(experiment_dict)
+        return experiment
     else:
         file_path = get_dataset_file_path(session_id)
         with open(file_path, "rb") as f:
