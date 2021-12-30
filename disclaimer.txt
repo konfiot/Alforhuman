@@ -1,16 +1,23 @@
-Preliminary Information
+Disclaimer
 
-[State what will happen] You will be asked to look at images and two categorize them. 
+[State what will happen] 
+If you agree to proceed, you will be participating in an experiment in which you will be asked to look at images and to categorize them. 
 
-[Explain the task] The categorization task is based on a random rule that you will have to infer based on the examples that will be showed to you.
-The experiment is divided in three part.
+[Explain the task] 
+The categorization task is based on a rule that you will have to infer based on the examples that will be shown to you.
+The experiment is divided in three parts.
 
-1) Initially, you will be showed some of the images and their category.
-2) Then, you will be asked to categorize a few images and you will get instant feedback on if your categorization was right.
-3) The last step is the testing phase, you will be asked to categorize some images and feedback won't be provided.
+1) Initially, you will be shown some of the images and their category, encoded in either 0 or 1.
+2) Then, you will be asked to categorize a few images and you will get instant feedback on if your categorization was right. 
 
-Data Privacy: Data is collected on ... [No ip stored or else]
+During those first 2 phases, you should try to infer the rule based on the feedback you are getting.
 
-If you have any questions about the research/data/wtv, you can contact florence.robert-regol@mail.mcgill.ca
+3) The last step is the testing phase, you will again be asked to categorize some images but feedback won't be provided.
 
-By clicking on proceeding, you agree to [store data on experiment]
+[Data Privacy]: No user-related information is collected, the record of the experiment is stored in a private server.
+
+If you have any questions about the research/data/other, you can contact florence.robert-regol@mail.mcgill.ca
+
+By clicking on 'start the experiment', you agree to participate in the experiment and consent on the experiment's record to be stored. 
+
+Button
