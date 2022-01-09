@@ -39,14 +39,8 @@ def user_form():
     if "id" not in session:
         return redirect("/")
 
-    for key in session["questions"].keys():
-        if key not in request.form:
-            return redirect("/")
-        else:
-            session[key] = request.form[key]  # TODO : Sanitize
-
     serverBusiness.receive_form(
-        session["id"], {k: session[k] for k in session["questions"].keys()})
+        session["id"], None)
     # Flip a coin to decide if we get Active Learning or Random
     al_type = random.randint(0, 1)
     serverBusiness.initialize_dataset(
