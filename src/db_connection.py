@@ -9,7 +9,7 @@ home_path = os.path.expanduser('~')
 fileName = 'X509-cert-999459858208805076.pem' # CHANGE
 
 if os.getenv('MONGODB_CERT'):
-    with open(filename, 'w') as f:
+    with open(fileName, 'w') as f:
         f.write(os.getenv("MONGODB_CERT"))
 
 path_to_certificate = os.path.join(home_path,'.ssh')
