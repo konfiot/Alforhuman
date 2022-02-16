@@ -6,7 +6,7 @@ import os
 from bson.binary import Binary
 home_path = os.path.expanduser('~')
 
-fileName = 'X509-cert-999459858208805076.pem' # CHANGE
+fileName = 'X509-cert-7270186068401876504.pem' # CHANGE
 
 path_to_certificate = os.path.join(home_path,'.ssh')
 try:
@@ -52,3 +52,10 @@ def update_experiment_db_entry(session_id, updated_dict):
     newvalues = { "$set": updated_dict }
 
     col.update_one(myquery, newvalues)
+
+
+def get_all_completed_experiment():
+    experiment_table = DB[TABLE_EXPERIMENT]
+    myquery = {"experiment_completed": True}
+    experiment_dict = experiment_table.find(myquery)
+    return experiment_dict
