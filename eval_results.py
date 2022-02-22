@@ -1,6 +1,8 @@
 from src.db_connection import get_all_completed_experiment
 from src.experiment import ExperimentDB
 import numpy as np 
+from scipy.stats import fisher_exact, ttest_ind
+
 
 def extract_score(exp):
     pred_tuple = exp.list_human_pred_test
@@ -23,8 +25,8 @@ def extract_score(exp):
 
 
 
-al_score = []
-random_score = []
+al_scores = []
+random_scores = []
 experiments_db = get_all_completed_experiment()
 for exp_db in experiments_db:
     exp = ExperimentDB(exp_db)
@@ -32,12 +34,23 @@ for exp_db in experiments_db:
     if al_type == 1:
         scores, avg_score =extract_score(exp)
         if scores is not None:
-            al_score.append(avg_score)
+            al_scores.append(scores)
     elif al_type == 0:
         scores, avg_score =extract_score(exp)
         if scores is not None:
-            random_score.append(avg_score)
+            random_scores.append(scores)
             
+means_al = [np.mean(i) for i in al_scores]
+means_rd = [np.mean(i) for i in random_scores]
 
-print('al',np.mean(al_score))
-print('random',np.mean(random_score))
+print('AL Experiment Result...')
+print()
+print("Total trials", len(means_al)+len(means_rd))
+print('Mean accuracy with al :',np.mean(means_al))
+print('Mean accuracy with random :',np.mean(means_rd))
+stat, p_val = ttest_ind(means_al, means_rd)
+print()
+if p_val < 0.05:
+    print('with significane')
+else:
+    print('without significance')
