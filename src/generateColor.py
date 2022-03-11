@@ -15,6 +15,7 @@ def store_image_return_path(x, file_path):
     A = np.zeros((100, 100, 3))
     A[:, :, :] = x
     plt.imshow(A)
+    plt.axis('off')
     plt.tight_layout()
     plt.savefig(file_path)
     plt.close()
@@ -24,6 +25,7 @@ def show_image(x, label=None):
     A = np.zeros((100, 100, 3))
     A[:, :, :] = x
     plt.ion()
+    plt.axis('off')
     plt.show()
     plt.imshow(A)
     
@@ -39,12 +41,13 @@ def show_image(x, label=None):
 
 def show_dataset(A):
     plt.imshow(A)
+    plt.axis('off')
     plt.show()
     plt.close()
 
 def generate_color_dataset(dataset_path, dataset_size, seed):
     A = create_color_task(seed)
-    #show_dataset(A)
+    show_dataset(A)
     max_step = A.shape[0]
     X = np.zeros((dataset_size, 3))
     y = []
