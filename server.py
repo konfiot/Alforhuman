@@ -19,8 +19,8 @@ if redis_url:
 app.secret_key = os.getenv('APP_SECRET', str(uuid.uuid1()))
 
 DATASET_PATH = 'data/'
-NUM_TRAIN_EXAMPLES = 5
-NUM_TEST_EXAMPLES = 5
+NUM_TRAIN_EXAMPLES = 10
+NUM_TEST_EXAMPLES = 10
 serverBusiness = ServerBusiness(db=True)  # change for local storage or use db
 
 
@@ -60,6 +60,7 @@ def show_samples():
 
 @app.route("/show_question/")
 def show_question():
+    print(session)
     if "id" not in session:
         return redirect("/")
     is_testing = False
@@ -131,4 +132,4 @@ def finished():
     if "id" not in session:
         return redirect("/")
     serverBusiness.signal_end_experiment(session["id"])
-    return "kthxbye"
+    return render_template("thank_you.html")
