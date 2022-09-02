@@ -19,8 +19,8 @@ if redis_url:
 app.secret_key = os.getenv('APP_SECRET', str(uuid.uuid1()))
 
 DATASET_PATH = 'data/'
-NUM_TRAIN_EXAMPLES = 10
-NUM_TEST_EXAMPLES = 10
+NUM_TRAIN_EXAMPLES = 5
+NUM_TEST_EXAMPLES = 5
 serverBusiness = ServerBusiness(db=True)  # change for local storage or use db
 
 
@@ -105,6 +105,9 @@ def get_answer(answer):
         good = int(session['true_y'] == answer)
         return redirect(f"/feedback/{good}")
     # test phase, dont show feedback directly ask other question. TODO show question with flag indicating that it is test time
+    elif session["counter"] == NUM_TRAIN_EXAMPLES :
+        session["counter"] += 1
+        return render_template("announcement.html", message="Testing phase, you won't receive feedback. ")
     elif session["counter"] < NUM_TRAIN_EXAMPLES + NUM_TEST_EXAMPLES:
         session["counter"] += 1
         # store previous answer
@@ -132,4 +135,4 @@ def finished():
     if "id" not in session:
         return redirect("/")
     serverBusiness.signal_end_experiment(session["id"])
-    return render_template("thank_you.html")
+    return render_template("announcement.html", message='Thank you!')
