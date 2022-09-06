@@ -114,13 +114,17 @@ def create_color_task(seed):
     # generate three random colors, that are different enough
     random.seed(seed)
     color1 = generate_random_color()
+    rgb_color_1 = color1/np.linalg.norm(color1)
     l2_color_diff = 0
-    while l2_color_diff < 0.8:  # make sure the task is not too hard, the difference between the two colors has to be big enough
+    while l2_color_diff < 0.7:  # make sure the task is not too hard, the difference between the two colors has to be big enough
         color2 = generate_random_color()
-        l2_color_diff = np.linalg.norm(color1-color2)
-        print(l2_color_diff)
+        A = get_color_matrix(color1, color2)
+        show_dataset(A)
+        rgb_color_2 = color2/np.linalg.norm(color2)
+        l2_color_diff = np.linalg.norm(rgb_color_1-rgb_color_2)
+
     print('final', l2_color_diff)
-    A = get_color_matrix(color1, color2)
+
     return A
 
 
