@@ -2,6 +2,7 @@
 import random
 from modAL.models import ActiveLearner
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier
 
 def generate_next_query(experiment):
     al_type = experiment.al_type
@@ -14,7 +15,7 @@ def generate_next_query(experiment):
        
         # initializing the learner
         learner = ActiveLearner(
-            estimator=RandomForestClassifier(),
+            estimator=AdaBoostClassifier(),
             X_training=X_training, y_training=y_training
         )
         
