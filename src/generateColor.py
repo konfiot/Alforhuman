@@ -119,11 +119,8 @@ def create_color_task(seed):
     while l2_color_diff < 0.7:  # make sure the task is not too hard, the difference between the two colors has to be big enough
         color2 = generate_random_color()
         A = get_color_matrix(color1, color2)
-        show_dataset(A)
         rgb_color_2 = color2/np.linalg.norm(color2)
         l2_color_diff = np.linalg.norm(rgb_color_1-rgb_color_2)
-
-    print('final', l2_color_diff)
 
     return A
 

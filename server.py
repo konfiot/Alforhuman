@@ -65,19 +65,24 @@ def show_question():
     is_testing = False
     if ("counter" not in session):
         session["counter"] = 0
+        session["progress_bar_count"] = 0
         progress_bar = 0
         X_query, true_y, q = serverBusiness.start_active_learning(
             session["id"])  # get first query
     elif session["counter"] < NUM_TRAIN_EXAMPLES:  # get next query, still in train phase
 
-        progress_bar = session['counter']/NUM_TRAIN_EXAMPLES
+        progress_bar = session['progress_bar_count']/NUM_TRAIN_EXAMPLES
         X_query, true_y, q = serverBusiness.active_learning_iteration(
             session["id"])
+    elif session["counter"] == NUM_TRAIN_EXAMPLES:
+        session["counter"] += 1
+        session['progress_bar_count']=0
+        return render_template("announcement.html", message="Testing phase, you won't receive feedback. ")
     else:
         is_testing = True
         X_query, true_y, q = serverBusiness.test_iteration(session["id"])
-        progress_bar = (session['counter'] -
-                        NUM_TRAIN_EXAMPLES)/NUM_TEST_EXAMPLES
+        progress_bar = session['progress_bar_count']/NUM_TEST_EXAMPLES
+    print(progress_bar)
     session["true_y"] = int(true_y)
     session["q"] = q
     progress_bar = int(100*progress_bar)
@@ -101,14 +106,14 @@ def get_answer(answer):
         serverBusiness.store_active_learning_pred(
             session["id"], answer, session["q"])  # store previous answer
         session["counter"] += 1
+        session['progress_bar_count']+=1
         good = int(session['true_y'] == answer)
         return redirect(f"/feedback/{good}")
     # test phase, dont show feedback directly ask other question. TODO show question with flag indicating that it is test time
-    elif session["counter"] == NUM_TRAIN_EXAMPLES:
-        session["counter"] += 1
-        return render_template("announcement.html", message="Testing phase, you won't receive feedback. ")
+  
     elif session["counter"] < NUM_TRAIN_EXAMPLES + NUM_TEST_EXAMPLES:
         session["counter"] += 1
+        session['progress_bar_count']+=1
         # store previous answer
         serverBusiness.store_pred(session["id"], answer, session["q"])
         return redirect("/show_question")
@@ -141,3 +146,4 @@ def finished():
 
 def clear_session(session):
     del session["id"]
+    del session["counter"]
