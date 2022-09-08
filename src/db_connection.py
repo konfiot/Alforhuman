@@ -10,10 +10,10 @@ home_path = os.path.expanduser('~')
 fileName = 'X509-cert-999459858208805076.pem' # server pem
 
 path_to_certificate = os.path.join(home_path,'.ssh')
-# try:
-#     os.mkdir(path_to_certificate)
-# except OSError as error:
-#     print(error)    
+try:
+    os.mkdir(path_to_certificate)
+except OSError as error:
+    print(error)    
 path_to_certificate = os.path.join(path_to_certificate,fileName)
 
 if os.getenv('MONGODB_CERT', None):
