@@ -9,19 +9,19 @@ redis_url = os.getenv('REDISTOGO_URL', '')
 
 app = Flask(__name__)
 
-if redis_url :
-	app.config['SESSION_TYPE'] = 'redis'
-	app.config['SESSION_PERMANENT'] = False
-	app.config['SESSION_USE_SIGNER'] = True
-	app.config['SESSION_REDIS'] = redis.from_url(redis_url)
+if redis_url:
+    app.config['SESSION_TYPE'] = 'redis'
+    app.config['SESSION_PERMANENT'] = False
+    app.config['SESSION_USE_SIGNER'] = True
+    app.config['SESSION_REDIS'] = redis.from_url(redis_url)
 
 
 app.secret_key = os.getenv('APP_SECRET', str(uuid.uuid1()))
 
 DATASET_PATH = 'data/'
 NUM_TRAIN_EXAMPLES = 5
-NUM_TEST_EXAMPLES = 5
-serverBusiness = ServerBusiness(db=True) # change for local storage or use db
+NUM_TEST_EXAMPLES = 10
+serverBusiness = ServerBusiness(db=True)  # change for local storage or use db
 
 
 @app.route('/')
@@ -62,20 +62,31 @@ def show_samples():
 def show_question():
     if "id" not in session:
         return redirect("/")
-
+    is_testing = False
     if ("counter" not in session):
         session["counter"] = 0
+        session["progress_bar_count"] = 0
+        progress_bar = 0
         X_query, true_y, q = serverBusiness.start_active_learning(
             session["id"])  # get first query
     elif session["counter"] < NUM_TRAIN_EXAMPLES:  # get next query, still in train phase
+
+        progress_bar = session['progress_bar_count']/NUM_TRAIN_EXAMPLES
         X_query, true_y, q = serverBusiness.active_learning_iteration(
             session["id"])
+    elif session["counter"] == NUM_TRAIN_EXAMPLES:
+        session["counter"] += 1
+        session['progress_bar_count']=0
+        return render_template("announcement.html", message="Testing phase, you won't receive feedback. ")
     else:
+        is_testing = True
         X_query, true_y, q = serverBusiness.test_iteration(session["id"])
-
+        progress_bar = session['progress_bar_count']/NUM_TEST_EXAMPLES
+    print(progress_bar)
     session["true_y"] = int(true_y)
     session["q"] = q
-    return render_template("show_question.html", X=X_query)
+    progress_bar = int(100*progress_bar)
+    return render_template("show_question.html", X=X_query, is_testing=is_testing, progress_bar=progress_bar)
 
 
 @app.route("/answer_question/<int:answer>")
@@ -95,11 +106,14 @@ def get_answer(answer):
         serverBusiness.store_active_learning_pred(
             session["id"], answer, session["q"])  # store previous answer
         session["counter"] += 1
+        session['progress_bar_count']+=1
         good = int(session['true_y'] == answer)
         return redirect(f"/feedback/{good}")
     # test phase, dont show feedback directly ask other question. TODO show question with flag indicating that it is test time
+  
     elif session["counter"] < NUM_TRAIN_EXAMPLES + NUM_TEST_EXAMPLES:
         session["counter"] += 1
+        session['progress_bar_count']+=1
         # store previous answer
         serverBusiness.store_pred(session["id"], answer, session["q"])
         return redirect("/show_question")
@@ -125,4 +139,11 @@ def finished():
     if "id" not in session:
         return redirect("/")
     serverBusiness.signal_end_experiment(session["id"])
-    return "kthxbye"
+    clear_session(session)
+    # session = {} # clear the session
+    return render_template("thank_you.html")
+
+
+def clear_session(session):
+    del session["id"]
+    del session["counter"]

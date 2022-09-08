@@ -15,26 +15,14 @@
 
 <body>
 	<main role="main" class="container">
-
-		<div class="row mt-3">
-			<div class="col">
-				{% if result %}
-				<div class="alert alert-success" role="alert">
-					Yes, you got the right answer!
+		<div class="jumbotron text-center">
+			<h1 class="display-3">{{message}}</h1>
+			<div class="row mt-3">
+				<div class="col text-center">
+					<a class="btn btn-primary btn-lg" href="/show_question" role="button">OK, got it</a>
 				</div>
-				{% else %}
-				<div class="alert alert-danger" role="alert">
-					Wrong, better luck next time
-				</div>
-				{% endif %}
 			</div>
-		</div>
-
-		<div class="row mt-3">
-			<div class="col text-center">
-				<a class="btn btn-primary btn-lg" href="/show_question" role="button">Next</a>
-			</div>
-		</div>
+		  </div>
 
 	</main><!-- /.container -->
 </body>

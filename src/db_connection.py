@@ -6,13 +6,14 @@ import os
 from bson.binary import Binary
 home_path = os.path.expanduser('~')
 
-fileName = 'X509-cert-7270186068401876504.pem' # CHANGE
+#fileName = 'X509-cert-5103000809780475713.pem' # CHANGE
+fileName = 'X509-cert-999459858208805076.pem' # server pem
 
 path_to_certificate = os.path.join(home_path,'.ssh')
-try:
-    os.mkdir(path_to_certificate)
-except OSError as error:
-    print(error)    
+# try:
+#     os.mkdir(path_to_certificate)
+# except OSError as error:
+#     print(error)    
 path_to_certificate = os.path.join(path_to_certificate,fileName)
 
 if os.getenv('MONGODB_CERT', None):
@@ -37,6 +38,7 @@ def store_db(collection_name, dict_entry):
     col = DB[collection_name]
     x = col.insert_one(dict_entry)
     return x.inserted_id
+    
 def get_experiment_from_db(session_id):
     experiment_table = DB[TABLE_EXPERIMENT]
     myquery = {"session_id": session_id}
