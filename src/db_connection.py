@@ -7,7 +7,7 @@ from bson.binary import Binary
 home_path = os.path.expanduser('~')
 
 #fileName = 'X509-cert-5103000809780475713.pem' # CHANGE
-fileName = ''
+fileName = 'X509-cert-999459858208805076.pem' # server pem
 
 path_to_certificate = os.path.join(home_path,'.ssh')
 # try:
