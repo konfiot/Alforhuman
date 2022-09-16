@@ -6,8 +6,8 @@ import os
 from bson.binary import Binary
 home_path = os.path.expanduser('~')
 
-fileName = 'X509-cert-5103000809780475713.pem' # CHANGE
-#fileName = 'X509-cert-999459858208805076.pem' # server pem
+fileName = 'X509-cert-5983501895474278860.pem' # CHANGE
+
 
 path_to_certificate = os.path.join(home_path,'.ssh')
 try:
@@ -17,10 +17,12 @@ except OSError as error:
 path_to_certificate = os.path.join(path_to_certificate,fileName)
 
 if os.getenv('MONGODB_CERT', None):
+    print('loading from MONGODB_CERT...')
     with open(path_to_certificate, 'w') as f:
         f.write(os.getenv("MONGODB_CERT", None))
         print("file written")
 else:
+    
     print(os.getenv("MONGODB_CERT", None))
 
 
