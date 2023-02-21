@@ -81,7 +81,7 @@ print('Mean accuracy with random :',np.mean(means_rd))
 
 print(means_al)
 print(means_rd)
-stat, p_val = ttest_ind(means_al, means_rd)
+stat, p_val = ttest_ind(means_al, means_rd, equal_var=False)
 print(p_val)
 if p_val < 0.05:
     print('with significane')
