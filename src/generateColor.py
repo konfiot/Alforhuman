@@ -155,7 +155,7 @@ if __name__ == '__main__':
         print('Creating the dataset folder since it wasn\'t there\n')
         os.makedirs(data_path)
 
-    NUM_DATASETS = 30
+    NUM_DATASETS = 300
     dataset_size = 30
     start_seed = int(time.time() * 10000000)  # This should always increase
 
