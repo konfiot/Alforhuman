@@ -34,12 +34,6 @@ def root():
     return render_template("home.html", id=session["id"], questions=session["questions"])
 
 
-@app.route("/message/")
-def user_form():
-    if "id" not in session:
-        return redirect("/")
-    return render_template("home_1.html", id=session["id"])
-
 @app.route("/user_form/", methods=["POST"])
 def user_form():
     if "id" not in session:
