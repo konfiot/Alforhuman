@@ -25,6 +25,9 @@ def generate_next_query(experiment):
         X_training = experiment.X[experiment.labeled, :] 
         y_training = experiment.y[experiment.labeled]
         X_pool = experiment.X[experiment.unlabeled, :] 
+        if len(experiment.list_human_pred_train) > 0:
+           
+            y_training = y_training[:experiment.init_labeled_size] + [human_tuple[1] for human_tuple in experiment.list_human_pred_train]
         # initializing the learner
         learner = ActiveLearner(
             estimator=AdaBoostClassifier(),

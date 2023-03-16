@@ -18,7 +18,6 @@ if __name__ == "__main__":
     print('Trying out the', dataset_type, 'dataset')
    
     al_type = random.randint(0, 2) # Flip a coin to decide if we get Active Learning or Random
-    al_type = 2
     session_id, questions = serverBusiness.start_session()
     # Normally we ask the questions to fill the form, here we skip it and just return an empty form.
     serverBusiness.receive_form(session_id, user_form=None)
