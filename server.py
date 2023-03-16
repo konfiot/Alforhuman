@@ -19,8 +19,8 @@ if redis_url:
 app.secret_key = os.getenv('APP_SECRET', str(uuid.uuid1()))
 
 DATASET_PATH = 'data/'
-NUM_TRAIN_EXAMPLES = 5
-NUM_TEST_EXAMPLES = 10
+NUM_TRAIN_EXAMPLES = 7
+NUM_TEST_EXAMPLES = 13
 serverBusiness = ServerBusiness(db=True)  # change for local storage or use db
 
 
@@ -33,6 +33,11 @@ def root():
 
     return render_template("home.html", id=session["id"], questions=session["questions"])
 
+@app.route("/next/", methods=["POST"])
+def next():
+    if "id" not in session:
+        return redirect("/")
+    return render_template("info.html", id=session["id"])
 
 @app.route("/user_form/", methods=["POST"])
 def user_form():
