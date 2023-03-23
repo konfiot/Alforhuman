@@ -47,7 +47,7 @@ def user_form():
     serverBusiness.receive_form(
         session["id"], None)
     # Flip a coin to decide if we get Active Learning or Random
-    al_type = random.randint(0, 1)
+    al_type = random.randint(0, 2)
     serverBusiness.initialize_dataset(
         session["id"], 'color', al_type, DATASET_PATH)
     return redirect("/show_samples")
