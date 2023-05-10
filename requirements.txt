@@ -1,6 +1,6 @@
 gunicorn
 Flask==2.0.2
-matplotlib==3.5.1
+matplotlib==3.3.4
 modAL==0.4.1
 numpy==1.21.3
 pymongo[srv]==4.0.1
