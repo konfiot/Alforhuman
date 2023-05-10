@@ -6,6 +6,7 @@ RUN apk add --no-cache \
         python3 \
 	python3-dev \
 	gcc \
+	g++ \
 	libc-dev \
         py3-pip
 COPY requirements.txt .
