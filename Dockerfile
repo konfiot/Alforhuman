@@ -6,7 +6,7 @@ RUN apk add --no-cache \
         python3 \
 	python3-dev \
 	gcc \
-	lib-dev \
+	libc-dev \
         py3-pip
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
