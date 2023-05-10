@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.18
 EXPOSE 3031
 VOLUME /usr/src/app/
 WORKDIR /usr/src/app/
