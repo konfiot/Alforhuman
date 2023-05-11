@@ -4,10 +4,10 @@ VOLUME /usr/src/app/
 WORKDIR /usr/src/app/
 RUN apk add --no-cache \
         python3 \
-	python3-dev \
-	gcc \
-	g++ \
-	libc-dev \
+        python3-dev \
+        gcc \
+        g++ \
+        libc-dev \
         py3-pip
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
