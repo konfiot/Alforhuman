@@ -8,6 +8,7 @@ RUN apk add --no-cache \
         gcc \
         g++ \
         libc-dev \
+        gfortran \
         py3-pip
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
