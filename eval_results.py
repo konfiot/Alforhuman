@@ -3,6 +3,8 @@ from src.experiment import ExperimentDB
 import numpy as np 
 from scipy.stats import fisher_exact, ttest_ind
 
+from vis import look_at_bunch_of_samples
+
 
 def extract_score(exp):
     pred_tuple = exp.list_human_pred_test
@@ -27,53 +29,46 @@ def extract_score(exp):
 
 al_scores = []
 random_scores = []
-al_next = []
+
+
+al_exp = []
+random_exp = []
+
 experiments_db = get_all_completed_experiment()
+
 for exp_db in experiments_db:
     exp = ExperimentDB(exp_db)
     al_type = exp.al_type
-    if al_type == 1:
+    if al_type == 1 or al_type == 2:
         scores, avg_score =extract_score(exp)
         if scores is not None:
             al_scores.append(scores)
+            al_exp.append(exp)
     elif al_type == 0:
         scores, avg_score =extract_score(exp)
         if scores is not None:
             random_scores.append(scores)
-    elif al_type == 2:
-        scores, avg_score =extract_score(exp)
-        if scores is not None:
-            al_next.append(scores)
+            random_exp.append(exp)
+   
             
 means_al = [np.mean(i) for i in al_scores]
 means_rd = [np.mean(i) for i in random_scores]
-means_al2 = [np.mean(i) for i in al_next]
 
 import matplotlib.pyplot as plt
 
 fig1, ax1 = plt.subplots()
 
-all_data = [means_al2, means_al,means_rd]
+all_data = [means_al,means_rd]
 
-ax1.boxplot(all_data)
+look_at_bunch_of_samples(all_data, ['w/ active learning', 'random baseline'], x_label=[], y_label='Accuracy')
 
 
-ax1.yaxis.grid(True)
-ax1.set_xticks([y + 1 for y in range(len(all_data))])
-
-ax1.set_ylabel('Accuracy')
-
-# add x-tick labels
-plt.setp(ax1, xticks=[y + 1 for y in range(len(all_data))],
-         xticklabels=['human modeling + active learning', 'with active learning', 'random baseline'])
-plt.savefig('good_start.pdf')
 
 
 print('AL Experiment Result...')
 
 print("Total trials", len(means_al)+len(means_rd))
 print('Mean accuracy with al :',np.mean(means_al))
-print('Mean accuracy with next al :',np.mean(means_al2))
 print('Mean accuracy with random :',np.mean(means_rd))
 
 
