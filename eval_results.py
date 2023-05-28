@@ -2,14 +2,8 @@ from src.db_connection import get_all_completed_experiment
 from src.experiment import ExperimentDB
 import numpy as np 
 from scipy.stats import fisher_exact, ttest_ind
-<<<<<<< HEAD
 import matplotlib.pyplot as plt
 import seaborn as sns
-=======
-
-from vis import look_at_bunch_of_samples
-
->>>>>>> 9e1b3dc6b6eac26c881133743ea3083f757e570b
 
 def extract_score(exp):
     pred_tuple = exp.list_human_pred_test
