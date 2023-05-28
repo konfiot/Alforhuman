@@ -35,7 +35,7 @@ def root():
 
 
 @app.route("/message/")
-def user_form():
+def message():
     if "id" not in session:
         return redirect("/")
     return render_template("home_1.html", id=session["id"])
