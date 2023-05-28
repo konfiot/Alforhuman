@@ -15,7 +15,7 @@ counter_file = os.path.join(data_path, "dataset_counter.txt")
 def store_image_return_path(x, file_path):
     A = np.zeros((100, 100, 3))
     A[:, :, :] = x
-    # plt.imshow(A)
+    plt.imshow(A)
     plt.axis('off')
     plt.tight_layout()
     plt.savefig(file_path)
