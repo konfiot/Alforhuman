@@ -59,7 +59,7 @@ class Experiment:
 
     def get_updated_dict(self):
         updated_dict = {'labeled': self.labeled, 'labeled_size': self.labeled_size, 'unlabeled': self.unlabeled, 'test_indices': self.test_indices,
-                        'list_human_pred_test': self.list_human_pred_test, 'test_index': self.test_index, 'experiment_completed': self.experiment_completed}
+                        'list_human_pred_test': self.list_human_pred_test, 'list_human_pred_train': self.list_human_pred_train, 'test_index': self.test_index, 'experiment_completed': self.experiment_completed}
 
         return updated_dict
 
