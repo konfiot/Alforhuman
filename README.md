@@ -1,5 +1,6 @@
 # Alforhuman
 
+
 Run before anything :
 
 `$ python src/generateColor.py`
