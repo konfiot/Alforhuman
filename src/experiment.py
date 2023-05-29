@@ -1,4 +1,4 @@
-from src.generateColor import get_next_dataset
+from src.generateColor import get_mushroom_dataset, get_next_dataset
 from src.db_connection import store_db, get_experiment_from_db, update_experiment_db_entry, TABLE_EXPERIMENT, TABLE_DATABASE
 import random
 import time
@@ -114,6 +114,11 @@ def link_dataset_to_session(session_id, dataset_type, al_type, dataset_path, db)
             store_db(collection_name=TABLE_EXPERIMENT,
                      dict_entry=experiment_dict)
         return experiment
+    elif dataset_type == 'mushroom':
+        init_labeled_size = 3
+        X, y, images_path = get_mushroom_dataset()
+        
+
     else:
         return NotImplementedError
 
