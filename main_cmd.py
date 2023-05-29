@@ -17,7 +17,8 @@ if __name__ == "__main__":
     serverBusiness = ServerBusiness(db=False) # change for local storage or use db
     print('Trying out the', dataset_type, 'dataset')
    
-    al_type = random.randint(0, 2) # Flip a coin to decide if we get Active Learning or Random
+   # al_type = random.randint(0, 2) # Flip a coin to decide if we get Active Learning or Random
+    al_type = 0  
     session_id, questions = serverBusiness.start_session()
     # Normally we ask the questions to fill the form, here we skip it and just return an empty form.
     serverBusiness.receive_form(session_id, user_form=None)
@@ -29,14 +30,14 @@ if __name__ == "__main__":
     X_0, y_0 = serverBusiness.get_first_images(session_id, return_raw_features=True)
 
     # display first images to the user
-    show_to_the_user(X_0, y_0)
+    show_to_the_user(X_0, y_0, dataset_type)
 
     # get from server first image to display
     X_query, true_y, q = serverBusiness.start_active_learning(
         session_id, return_raw_features=True)
 
     # get from the  user its classification
-    human_label = query_user(X_query, true_y)
+    human_label = query_user(X_query, true_y,dataset_type)
 
     keepgoing = True
     counter = 0
@@ -44,7 +45,7 @@ if __name__ == "__main__":
 
         serverBusiness.store_active_learning_pred(session_id, human_label, q)# store previous answer,
         X_query, true_y, q = serverBusiness.active_learning_iteration(session_id, return_raw_features=True) # get next query
-        human_label = query_user(X_query, true_y)
+        human_label = query_user(X_query, true_y,dataset_type=dataset_type)
         counter += 1
         if counter == NUM_TRAIN_EXAMPLES:
             keepgoing = False
@@ -54,7 +55,7 @@ if __name__ == "__main__":
     keepgoing = True
     while keepgoing:
         X_query, true_y, q = serverBusiness.test_iteration(session_id,  return_raw_features=True)
-        human_label_test = query_user(X_query)
+        human_label_test = query_user(X_query,dataset_type=dataset_type)
         serverBusiness.store_pred(session_id, human_label_test,q)
         counter += 1
         if counter == NUM_TEST_EXAMPLES:

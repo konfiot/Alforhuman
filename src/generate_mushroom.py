@@ -10,6 +10,20 @@ import numpy as np
 import imageio.v2 as imageio
 
 
+def show_mushroom(x, label=None):
+    plt.imshow(x)
+    plt.axis('off')
+    if label is None:
+        plt.title('What is this ?')
+    else:
+        plt.title('This is '+str(label))
+    plt.tight_layout()
+    plt.draw()
+    plt.pause(2)
+    plt.close()
+
+
+
 def draw_im(x, filename):
     plt.imshow(x)
     plt.axis('off')
@@ -33,7 +47,7 @@ def get_mushroom_dataset():
         image_path = os.path.join(
             mushroom_data_path, 'mushroom_{}.png'.format(i))
         images_path.append(image_path)
-    return dataset_data['X'], dataset_data['y'], images_path
+    return dataset_data['X'], np.array(dataset_data['y']), images_path
 
 
 def generate_and_store_mushroom_images():
