@@ -147,9 +147,8 @@ if __name__ == '__main__':
         print('Creating the dataset folder since it wasn\'t there\n')
         os.makedirs(MUSHROOM_DATAPATH)
     
-    data_file_path = os.path.join(MUSHROOM_DATAPATH, 'mushroom_data.pkl')
+    data_file_path = os.path.join(MUSHROOM_DATAPATH,MUSHROOM_FILENAME)
     if not os.path.exists(data_file_path):
-        
         print('Downloading the mushroom dataset...')
         download_mushroom()
 

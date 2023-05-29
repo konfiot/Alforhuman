@@ -4,7 +4,12 @@ from pymongo import MongoClient
 import pickle as pk
 import os
 from bson.binary import Binary
+
 home_path = os.path.expanduser('~')
+
+TABLE_EXPERIMENT = 'experiment'
+TABLE_DATABASE = 'database'
+TABLE_MUSHROOM_DATABASE = 'mushroom_database'
 
 fileName = 'X509-cert-5983501895474278860.pem' # CHANGE
 
@@ -33,13 +38,16 @@ client = MongoClient(uri,
 
 
 DB = client["database"]
-TABLE_EXPERIMENT = 'experiment'
-TABLE_DATABASE = 'database'
-
 def store_db(collection_name, dict_entry):
     col = DB[collection_name]
     x = col.insert_one(dict_entry)
     return x.inserted_id
+    
+def store_db_or_get_id(collection_name,dict_entries):
+    col = DB[collection_name]
+    if col.count_documents({"type":"mushroom"}) == 0:
+        for dict_entry in dict_entries:
+            x = col.insert_one(dict_entry)
     
 def get_experiment_from_db(session_id):
     experiment_table = DB[TABLE_EXPERIMENT]
