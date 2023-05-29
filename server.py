@@ -1,6 +1,5 @@
-from flask import Flask, session, redirect, request, render_template
+from flask import Flask, session, redirect, render_template
 import uuid
-import random
 from server_business.server_business import ServerBusiness
 import os
 import redis
@@ -47,9 +46,9 @@ def user_form():
     serverBusiness.receive_form(
         session["id"], None)
     # Flip a coin to decide if we get Active Learning or Random
-    al_type = random.randint(0, 2)
+    al_type = 0 #random.randint(0, 2)
     serverBusiness.initialize_dataset(
-        session["id"], 'color', al_type, DATASET_PATH)
+        session["id"], 'mushroom', al_type, DATASET_PATH)
     return redirect("/show_samples")
 
 
