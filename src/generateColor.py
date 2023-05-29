@@ -9,7 +9,6 @@ import pickle as pk
 
 
 data_path = 'static/data'
-mushroom_data_path = 'static/mushroom'
 counter_file = os.path.join(data_path, "dataset_counter.txt")
 
 
@@ -134,16 +133,6 @@ def get_image_file_path(data_path, dataset_type, seed):
     dataset_name_path = dataset_type+'_'+str(seed)
     dataset_path = os.path.join(data_path, dataset_name_path)
     return dataset_path
-
-
-def get_mushroom_dataset():
-
-    data_file_path = os.path.join(mushroom_data_path, 'mushroom_data_path.pkl')
-
-    with open(data_file_path, "rb") as f:
-        dataset_data = pk.load(f)
-
-    return dataset_data['X'], dataset_data['y'], data_file_path
 
 
 def get_next_dataset():
