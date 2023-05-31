@@ -48,8 +48,8 @@ def show_dataset(A):
 
 
 def generate_color_dataset(dataset_path, dataset_size, seed):
-    A = create_color_task(seed)
-    show_dataset(A)
+    A, color_from, color_to = create_color_task(seed)
+    # show_dataset(A)
     max_step = A.shape[0]
     X = np.zeros((dataset_size, 3))
     y = []
@@ -75,7 +75,11 @@ def generate_color_dataset(dataset_path, dataset_size, seed):
         file_path = os.path.join(dataset_path, filename)
         store_image_return_path(X[i, :], file_path)
         images_path.append(file_path)
-
+    # store the generating colros
+    root_colors = {'color_from': color_from, 'color_to': color_to}
+    file_path = os.path.join(dataset_path, 'data_root.pkl')
+    with open(file_path, 'wb') as f:
+        pk.dump(root_colors, f)
     return X, y, images_path
 
 
@@ -113,16 +117,16 @@ def get_color_matrix(colorfrom, colorto):
 def create_color_task(seed):
     # generate three random colors, that are different enough
     random.seed(seed)
-    color1 = generate_random_color()
-    rgb_color_1 = color1/np.linalg.norm(color1)
+    color_from = generate_random_color()
+    rgb_color_1 = color_from/np.linalg.norm(color_from)
     l2_color_diff = 0
     while l2_color_diff < 0.7:  # make sure the task is not too hard, the difference between the two colors has to be big enough
-        color2 = generate_random_color()
-        A = get_color_matrix(color1, color2)
-        rgb_color_2 = color2/np.linalg.norm(color2)
+        color_to = generate_random_color()
+        A = get_color_matrix(color_from, color_to)
+        rgb_color_2 = color_to/np.linalg.norm(color_to)
         l2_color_diff = np.linalg.norm(rgb_color_1-rgb_color_2)
 
-    return A
+    return A, color_from, color_to
 
 
 def get_image_file_path(data_path, dataset_type, seed):
@@ -155,7 +159,7 @@ if __name__ == '__main__':
         print('Creating the dataset folder since it wasn\'t there\n')
         os.makedirs(data_path)
 
-    NUM_DATASETS = 300
+    NUM_DATASETS = 30
     dataset_size = 30
     start_seed = int(time.time() * 10000000)  # This should always increase
 

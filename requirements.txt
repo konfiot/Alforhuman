@@ -1,7 +1,11 @@
-gunicorn
 Flask==2.0.2
-matplotlib==3.3.4
+imageio==2.29.0
+matplotlib==3.5.1
 modAL==0.4.1
-pymongo[srv]==4.0.1
+numpy==1.21.2
+pandas==1.5.3
+pymongo==4.0.1
 redis==4.1.0
-scikit_learn==1.0.2
+scikit_learn==1.2.2
+scipy==1.7.3
+seaborn==0.12.2
